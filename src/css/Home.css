@@ -1,0 +1,70 @@
+body{
+	background-image: url("../images/Travel.jpg");	
+	 background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: 100%;
+	
+}
+#header{
+	background-color:#1E1EA9;
+	margin-top:0px;
+	top:0px;
+	padding-top:10px;
+}
+
+.navbar-default {
+    background-color: #F8F8F8;
+    border-color: #E7E7E7;
+}
+.navbar-default .navbar-nav > li > a:hover {
+    background-color:#1E1EA9;
+    color:#ffffff;
+}
+.top-nav ul li	{
+					float : right;
+					padding:10px;
+					padding-bottom:25px;
+					list-style : none;
+					background-color:#1E1EA9;
+					border-radius:5px;
+					padding-top:15px;
+					
+				}
+#title{
+	font-family: AR BERKLEY;
+	color:#ffffff;
+}
+.top-nav ul li a{
+	color:#ffffff;
+	font-weight: bold;
+	
+	
+}
+#footer {
+					padding-top:5px;
+					padding-bottom:5px;
+					clear : both;
+					text-align: center;
+					color:white;
+					background-color:#00AAFF;
+					margin-top:200px;
+}
+.panel-default{
+	background-color: #F8F8F8;
+    border-color: #F8F8F8;
+    
+}
+#sec{
+	width:90%;
+	height:700px;
+	background-color:white;
+	margin-bottom:-180px;
+	margin-left:5%;
+}
+#matter{
+	padding-left:50px;
+	padding-right:50px;
+	padding-top:10px;
+	font-size:18px;
+	text-align: justify;
+}
