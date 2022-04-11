@@ -1,16 +1,18 @@
 import { useState } from "react";
-import { HeaderComponent } from "./HeaderComponent";
+import jwt_decode from "jwt-decode";
 import "../css/Login.css";
 import "../css/Home.css";
 import authService from "../services/AuthService";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { FooterComponent } from "./FooterComponent";
 
 const LoginComponent = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [error, setError] = useState(false);
+    const [errMessage, setErrMessage] = useState("");
     const navigate = useNavigate();
-
+    const { state } = useLocation();
     const handleSubmit = (event) => {
         event.preventDefault();
         let state = {
@@ -20,11 +22,22 @@ const LoginComponent = () => {
         console.log(state);
         authService.login(state)
             .then((response) => {
-                console.log(response);
-                navigate("/userHome");
-                window.location.reload();
-            }).catch(response => {
-                console.log(response);
+                console.log(response.access_token);
+                let decoded = jwt_decode(response.access_token);
+                if (decoded.roles[0] === "ROLE_USER") {
+                    navigate("/userHome");
+                    window.location.reload();
+                } else if (decoded.roles[0] === "ROLE_ADMIN") {
+                    localStorage.removeItem("user")
+                    setError(true);
+                    setErrMessage("Username/ Password Not Correct")
+                }
+            }).catch(err => {
+                console.log(err.response);
+                if (err.response.status === 403) {
+                    setError(true);
+                    setErrMessage("UserName / Password Not Correct");
+                }
             })
     }
 
@@ -33,7 +46,7 @@ const LoginComponent = () => {
             <div className="row offset-3">
                 <div className="card w-75 text-center" style={{ marginTop: "15px" }}>
                     <div className="card-header">
-                        <div className="row" style={{justifyContent:"space-evenly"}}>
+                        <div className="row" style={{ justifyContent: "space-evenly" }}>
                             <div className="col-xs-6 card-link">
                                 <a href="/login" className="active" id="login-form-link">Login</a>
                             </div>
@@ -70,20 +83,21 @@ const LoginComponent = () => {
                                         <div className="row">
                                             <div className="col-lg-12">
                                                 <div className="text-center">
-                                                    <a href="www.google.com" tabIndex="5" className="forgot-password">Forgot
+                                                    <a href="/forgotUser" tabIndex="5" className="forgot-password">Forgot
                                                         Password?</a>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div id="validation"></div>
+                                    <div id="validation" style={{ color: "red", fontWeight: "700" }}>{error === true ? errMessage : null}</div>
+                                    <div id="validation" style={{ color: "red", fontWeight: "700" }}>{state!==null? (state === "" ? null : state.message) : null}</div>
                                 </form>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            
+
             <FooterComponent />
         </div>
     )

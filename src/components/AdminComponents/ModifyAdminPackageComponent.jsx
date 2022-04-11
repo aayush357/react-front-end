@@ -1,47 +1,51 @@
 import React from "react";
 import AdminService from "../../services/AdminService";
 import { FooterComponent } from "../FooterComponent";
-import { HeaderComponent } from "../HeaderComponent";
+import Utilitites from "../../services/Utilitites";
 import { AdminAsideComponent } from "./AsideComponent";
 export class ModifyAdminPackageComponent extends React.Component {
-    constructor(){
+    constructor(props) {
         super();
-        this.state={
-            packages:[],
+        this.state = {
+            packages: [],
             days: 0,
             price: 0,
-            modification: false
+            modification: false,
+            error: "",
+            valErrors: [],
+            success: ""
         }
-        this.renderRows=this.renderRows.bind(this);
+        this.renderRows = this.renderRows.bind(this);
         // this.handleSubmit=this.handleSubmit.bind(this);
-        this.handleChanges=this.handleChanges.bind(this);
+        this.handleChanges = this.handleChanges.bind(this);
     }
 
-    componentDidMount(){
+    componentDidMount() {
         AdminService.getPackages()
-        .then(response => {
-            console.log(response.data);
-            let arr = [];
-            for (var i = 0; i < response.data.length; i++) {
-                arr.push({
-                    packageName: response.data[i].packageName,
-                    place: response.data[i].place,
-                    price: response.data[i].price,
-                    days: response.data[i].days
+            .then(response => {
+                console.log(response.data);
+                let arr = [];
+                for (var i = 0; i < response.data.length; i++) {
+                    arr.push({
+                        packageName: response.data[i].packageName,
+                        place: response.data[i].place,
+                        price: response.data[i].price,
+                        days: response.data[i].days
+                    })
+                }
+                this.setState({
+                    packages: arr
                 })
-            }
-            this.setState({
-                packages: arr
+                console.log(this.state.packages);
+            }).catch(err => {
+                console.log(err.response.data.error);
+                Utilitites.isLoggedIn(err.response.status, this.props.navigation);
             })
-            console.log(this.state.packages);
-        }).catch(err => {
-            console.log(err.response.data.error);
-        })
     }
 
-    handleChanges(event){
-        this.setState(prev =>{
-            return{
+    handleChanges(event) {
+        this.setState(prev => {
+            return {
                 ...prev,
                 [event.target.name]: event.target.value
             }
@@ -57,8 +61,8 @@ export class ModifyAdminPackageComponent extends React.Component {
                     <td>{ele.place}</td>
                     <td><input type="text" defaultValue={ele.days} name="days" onChange={this.handleChanges} /></td>
                     <td><input type="text" defaultValue={ele.price} name="price" onChange={this.handleChanges} /></td>
-                    <td><button onClick={() => this.handleModification(index, ele.packageName)}>Modify</button></td>
-                    <td><button onClick={() => this.handleCancellation(index, ele.packageName)}>Delete</button></td>
+                    <td><button className="btn btn-primary" onClick={() => this.handleModification(index, ele.packageName)}>Modify</button></td>
+                    <td><button className="btn btn-primary" onClick={() => this.handleCancellation(index, ele.packageName)}>Delete</button></td>
                 </tr>
             )
             return list;
@@ -66,7 +70,7 @@ export class ModifyAdminPackageComponent extends React.Component {
         return list;
     }
 
-    handleModification(index, pckg){
+    handleModification(index, pckg) {
         this.setState(prev => {
             return {
                 ...prev,
@@ -77,15 +81,43 @@ export class ModifyAdminPackageComponent extends React.Component {
         let pckgDTO = {
             packageName: pckgChoose.packageName,
             place: pckgChoose.place,
-            days: this.state.days===0 ? pckgChoose.days: parseInt(this.state.days),
-            price: this.state.price===0? pckgChoose.price: parseFloat(this.state.price)
+            days: this.state.days === 0 ? pckgChoose.days : parseInt(this.state.days),
+            price: this.state.price === 0 ? pckgChoose.price : parseFloat(this.state.price)
         }
         console.log(pckgDTO);
         console.log(this.state);
         AdminService.updatePackage(pckgDTO)
-        .then(res => {
-            console.log(res);
-        })
+            .then(res => {
+                console.log(res);
+                if (res.status === 200 && res.data === true) {
+                    this.setState(prev => {
+                        return {
+                            ...prev,
+                            success: "Your Package is Updated"
+                        }
+                    })
+                }
+            }).catch(err => {
+                if (err.response.status === 500) {
+                    if (err.response.data.messages !== null) {
+                        this.setState(prev => {
+                            return {
+                                ...prev,
+                                valErrors: err.response.data.messages
+                            }
+                        })
+                    } else {
+                        this.setState(prev => {
+                            return {
+                                ...prev,
+                                error: err.response.data.message
+                            }
+                        })
+                    }
+                } else {
+                    Utilitites.isLoggedIn(err.response.status, this.props.navigation);
+                }
+            })
     }
 
     render() {
@@ -97,7 +129,7 @@ export class ModifyAdminPackageComponent extends React.Component {
                         <h3>Modify / Delete Package</h3>
                         <table className="table table-striped">
                             <thead>
-                                <tr>
+                                <tr className="text-center">
                                     <th>Package Name</th>
                                     <th>Place</th>
                                     <th>No of Days</th>
@@ -111,6 +143,10 @@ export class ModifyAdminPackageComponent extends React.Component {
                             </tbody>
                         </table>
                     </div>
+                    <div id="validation" style={{ color: "red", fontWeight: "700", textAlign: "center" }}>{this.state.error === "" ? (this.state.valErrors === null ? null : this.state.valErrors.map((value, index) => {
+                                                return <div>{value}</div>
+                                            })) : this.state.error}</div>
+                    <div id="validation" style={{ color: "green", fontWeight: "700", textAlign: "center" }}>{this.state.success === "" ? null : this.state.success}</div>
                 </section>
                 <FooterComponent />
             </div>

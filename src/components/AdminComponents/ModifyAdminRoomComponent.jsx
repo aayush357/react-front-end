@@ -1,47 +1,51 @@
 import React from "react";
 import AdminService from "../../services/AdminService";
 import { FooterComponent } from "../FooterComponent";
-import { HeaderComponent } from "../HeaderComponent";
+import Utilitites from "../../services/Utilitites";
 import { AdminAsideComponent } from "./AsideComponent";
 export class ModifyAdminRoomComponent extends React.Component {
-    constructor(){
+    constructor() {
         super();
-        this.state={
-            rooms:[],
+        this.state = {
+            rooms: [],
             size: "",
             price: 0,
-            modification: false
+            modification: false,
+            error: "",
+            success: "",
+            valErrors: []
         }
-        this.renderRows=this.renderRows.bind(this);
+        this.renderRows = this.renderRows.bind(this);
         // this.handleSubmit=this.handleSubmit.bind(this);
-        this.handleChanges=this.handleChanges.bind(this);
+        this.handleChanges = this.handleChanges.bind(this);
     }
 
-    componentDidMount(){
+    componentDidMount() {
         AdminService.getRooms()
-        .then(response => {
-            console.log(response.data);
-            let arr = [];
-            for (var i = 0; i < response.data.length; i++) {
-                arr.push({
-                    hotelName: response.data[i].hotelName,
-                    type: response.data[i].type,
-                    price: response.data[i].price,
-                    size: response.data[i].size
+            .then(response => {
+                console.log(response.data);
+                let arr = [];
+                for (var i = 0; i < response.data.length; i++) {
+                    arr.push({
+                        hotelName: response.data[i].hotelName,
+                        type: response.data[i].type,
+                        price: response.data[i].price,
+                        size: response.data[i].size
+                    })
+                }
+                this.setState({
+                    rooms: arr
                 })
-            }
-            this.setState({
-                rooms: arr
+                console.log(this.state.rooms);
+            }).catch(err => {
+                console.log(err.response.data.error);
+                Utilitites.isLoggedIn(err.response.status, this.props.navigation);
             })
-            console.log(this.state.rooms);
-        }).catch(err => {
-            console.log(err.response.data.error);
-        })
     }
 
-    handleChanges(event){
-        this.setState(prev =>{
-            return{
+    handleChanges(event) {
+        this.setState(prev => {
+            return {
                 ...prev,
                 [event.target.name]: event.target.value
             }
@@ -57,8 +61,8 @@ export class ModifyAdminRoomComponent extends React.Component {
                     <td>{ele.type}</td>
                     <td><input type="text" defaultValue={ele.size} name="size" onChange={this.handleChanges} /></td>
                     <td><input type="number" defaultValue={ele.price} name="price" onChange={this.handleChanges} /></td>
-                    <td><button onClick={() => this.handleModification(index, ele.hotelName)}>Modify</button></td>
-                    <td><button onClick={() => this.handleCancellation(index, ele.hotelName)}>Delete</button></td>
+                    <td><button className="btn btn-primary" onClick={() => this.handleModification(index, ele.hotelName)}>Modify</button></td>
+                    <td><button className="btn btn-primary" onClick={() => this.handleCancellation(index, ele.hotelName)}>Delete</button></td>
                 </tr>
             )
             return list;
@@ -66,7 +70,7 @@ export class ModifyAdminRoomComponent extends React.Component {
         return list;
     }
 
-    handleModification(index, pckg){
+    handleModification(index, pckg) {
         this.setState(prev => {
             return {
                 ...prev,
@@ -77,15 +81,43 @@ export class ModifyAdminRoomComponent extends React.Component {
         let roomDTO = {
             hotelName: roomChoose.hotelName,
             type: roomChoose.type,
-            size: this.state.size==="" ? roomChoose.size: this.state.size,
-            price: this.state.price===0 ? roomChoose.price: parseInt(this.state.price),
+            size: this.state.size === "" ? roomChoose.size : this.state.size,
+            price: this.state.price === 0 ? roomChoose.price : parseInt(this.state.price),
         }
         console.log(roomDTO);
         console.log(this.state);
         AdminService.updateRoom(roomDTO)
-        .then(res => {
-            console.log(res);
-        })
+            .then(res => {
+                console.log(res);
+                if (res.status === 200 && res.data === true) {
+                    this.setState(prev => {
+                        return {
+                            ...prev,
+                            success: "Your Room is Updated"
+                        }
+                    })
+                }
+            }).catch(err => {
+                if (err.response.status === 500) {
+                    if (err.response.data.messages !== null) {
+                        this.setState(prev => {
+                            return {
+                                ...prev,
+                                valErrors: err.response.data.messages
+                            }
+                        })
+                    } else {
+                        this.setState(prev => {
+                            return {
+                                ...prev,
+                                error: err.response.data.message
+                            }
+                        })
+                    }
+                } else {
+                    Utilitites.isLoggedIn(err.response.status, this.props.navigation);
+                }
+            })
     }
 
     render() {
@@ -97,7 +129,7 @@ export class ModifyAdminRoomComponent extends React.Component {
                         <h3>Modify / Delete Room</h3>
                         <table className="table table-striped">
                             <thead>
-                                <tr>
+                                <tr className="text-center">
                                     <th>Hotel Name</th>
                                     <th>Type</th>
                                     <th>Size</th>
@@ -111,6 +143,10 @@ export class ModifyAdminRoomComponent extends React.Component {
                             </tbody>
                         </table>
                     </div>
+                    <div id="validation" style={{ color: "red", fontWeight: "700", textAlign: "center" }}>{this.state.error === "" ? (this.state.valErrors === null ? null : this.state.valErrors.map((value, index) => {
+                                                return <div>{value}</div>
+                                            })) : this.state.error}</div>
+                    <div id="validation" style={{ color: "green", fontWeight: "700", textAlign: "center" }}>{this.state.success === "" ? null : this.state.success}</div>
                 </section>
                 <FooterComponent />
             </div>

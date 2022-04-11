@@ -1,17 +1,20 @@
 import React from "react";
 import UserService from "../../services/UserService";
 import { FooterComponent } from "../FooterComponent";
-import { HeaderComponent } from "../HeaderComponent";
 import { AsideComponent } from "./AsideComponent";
 
 export class ConfirmationComponent extends React.Component {
-    constructor() {
+    constructor(props) {
         super();
         this.state = {
             userPackages: [],
             bill: false,
             balance: 1000,
-            confirmation: []
+            confirmation: [],
+            error: "",
+            valErrors: [],
+            modification: "",
+            success: ""
         }
         this.handlePayment = this.handlePayment.bind(this);
         this.handleCalculateBill = this.handleCalculateBill.bind(this);
@@ -40,6 +43,18 @@ export class ConfirmationComponent extends React.Component {
                 console.log(this.state.userPackages);
             }).catch(err => {
                 console.log(err);
+                if (err.response.status === 403) {
+                    this.props.navigation("/login", { state: { message: "You Have been Logged Out! Please Login Again" } })
+                    localStorage.removeItem("user");
+                    window.location.reload();
+                } else {
+                    this.setState(prev => {
+                        return {
+                            ...prev,
+                            error: err.response.data.message
+                        }
+                    })
+                }
             })
     }
 
@@ -52,10 +67,37 @@ export class ConfirmationComponent extends React.Component {
             balance: this.state.balance
         }
         UserService.doPayment(confirmationDTO)
-            .then(response => {
-                console.log(response);
+            .then(res => {
+                console.log(res);
+                if (res.status === 200 && res.data === true) {
+                    this.setState(prev => {
+                        return {
+                            ...prev,
+                            success: "Your Payment is Done"
+                        }
+                    })
+                }
             }).catch(err => {
                 console.log(err.response);
+                if (err.response.status === 403) {
+                    this.props.navigation("/login", { state: { message: "You Have been Logged Out! Please Login Again" } })
+                } else if (err.response.status === 500) {
+                    if (err.response.data.messages !== null) {
+                        this.setState(prev => {
+                            return {
+                                ...prev,
+                                valErrors: err.response.data.messages
+                            }
+                        })
+                    } else {
+                        this.setState(prev => {
+                            return {
+                                ...prev,
+                                error: err.response.data.message
+                            }
+                        })
+                    }
+                }
             })
     }
 
@@ -113,6 +155,25 @@ export class ConfirmationComponent extends React.Component {
                 })
             }).catch(err => {
                 console.log(err.response.data);
+                if (err.response.status === 403) {
+                    this.props.navigation("/login", { state: { message: "You Have been Logged Out! Please Login Again" } })
+                }else if (err.response.status === 500) {
+                    if (err.response.data.messages !== null) {
+                        this.setState(prev => {
+                            return {
+                                ...prev,
+                                valErrors: err.response.data.messages
+                            }
+                        })
+                    } else {
+                        this.setState(prev => {
+                            return {
+                                ...prev,
+                                error: err.response.data.message
+                            }
+                        })
+                    }
+                }
             })
     }
 
@@ -130,7 +191,7 @@ export class ConfirmationComponent extends React.Component {
                     <td>{ele.foodName}</td>
                     <td>{ele.foodCost}</td>
                     <td>{ele.totalCost}</td>
-                    <td><button onClick={() => this.handlePayment(index, ele.packageName)}>Pay</button></td>
+                    <td><button className="btn btn-primary" onClick={() => this.handlePayment(index, ele.packageName)}>Pay</button></td>
                 </tr>
             )
             return list;
@@ -144,7 +205,7 @@ export class ConfirmationComponent extends React.Component {
                 console.log("here inside func");
                 return (<table className="table table-striped">
                     <thead>
-                        <tr>
+                        <tr className="text-center">
                             <th>Package</th>
                             <th>Place</th>
                             <th>Package Cost</th>
@@ -187,6 +248,10 @@ export class ConfirmationComponent extends React.Component {
                         </table>
                     </div>
                     {renderAuth()}
+                    <div id="validation" style={{ color: "red", fontWeight: "700", textAlign: "center" }}>{this.state.error === "" ? (this.state.valErrors === null ? null : this.state.valErrors.map((value, index) => {
+                                                return <div>{value}</div>
+                                            })) : this.state.error}</div>
+                    <div id="validation" style={{ color: "green", fontWeight: "700", textAlign: "center" }}>{this.state.success === "" ? null : this.state.success}</div>
                 </section>
                 <FooterComponent />
             </div>

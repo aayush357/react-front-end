@@ -1,15 +1,18 @@
 import React from "react";
 import UserService from "../../services/UserService";
 import { FooterComponent } from "../FooterComponent";
-import { HeaderComponent } from "../HeaderComponent";
 import { AsideComponent } from "./AsideComponent";
 export class UserModifyFood extends React.Component {
-    constructor() {
+    constructor(props) {
         super();
         this.state = {
             userFoods: [],
             modification: false,
-            quantity: 0
+            quantity: 0,
+            error: "",
+            valErrors: [],
+            success: "",
+            active: []
         }
         this.renderRows = this.renderRows.bind(this);
         this.handleModification = this.handleModification.bind(this);
@@ -17,7 +20,7 @@ export class UserModifyFood extends React.Component {
         this.handleChange = this.handleChange.bind(this);
     }
 
-    handleChange(event){
+    handleChange(event) {
         this.setState(prev => {
             return {
                 ...prev,
@@ -43,9 +46,20 @@ export class UserModifyFood extends React.Component {
                 this.setState({
                     userFoods: arr
                 })
+                this.setState(prev => {
+                    return{
+                        ...prev,
+                        active: this.state.userFoods.filter(value => value.active==="true")
+                    }
+                })
                 console.log(this.state.userFoods);
             }).catch(err => {
                 console.log(err.response.data.error);
+                if (err.response.status === 403) {
+                    this.props.navigation("/login", { state: { message: "You Have been Logged Out! Please Login Again" } })
+                    localStorage.removeItem("user");
+                    window.location.reload();
+                }
             })
     }
 
@@ -63,8 +77,8 @@ export class UserModifyFood extends React.Component {
                         }
                     </td>
                     <td>{ele.active}</td>
-                    <td><button onClick={() => this.handleModification(index, ele.name)}>Modify</button></td>
-                    <td><button onClick={() => this.handleCancellation(index, ele.name)}>Cancel</button></td>
+                    <td>{ele.active === "true" ? <button  className="btn btn-primary" onClick={() => this.handleModification(index, ele.name)}>Modify</button> : null}</td>
+                    <td>{ele.active === "true" ? <button className="btn btn-primary" onClick={() => this.handleCancellation(index, ele.name)}>Cancel</button>: null}</td>
                 </tr>
             )
             return list;
@@ -85,7 +99,7 @@ export class UserModifyFood extends React.Component {
         let foodDTO = {
             name: foodChoose.name,
             type: foodChoose.type,
-            quantity: this.state.quantity,
+            quantity: this.state.quantity === 0 ? foodChoose.quantity : this.state.quantity,
             adminEmail: foodChoose.adminEmail
         }
         console.log(foodDTO);
@@ -93,12 +107,73 @@ export class UserModifyFood extends React.Component {
         UserService.updateFood(foodDTO)
             .then(res => {
                 console.log(res);
+                if (res.status === 200 && res.data === true) {
+                    this.setState(prev => {
+                        return {
+                            ...prev,
+                            success: "Your Food is Updated"
+                        }
+                    })
+                }
+            }).catch(err => {
+                if (err.response.status === 403) {
+                    this.props.navigation("/login", { state: { message: "You Have been Logged Out! Please Login Again" } })
+                    localStorage.removeItem("user");
+                    window.location.reload();
+                } else if (err.response.status === 500) {
+                    if (err.response.data.messages !== null) {
+                        this.setState(prev => {
+                            return {
+                                ...prev,
+                                valErrors: err.response.data.messages
+                            }
+                        })
+                    } else {
+                        this.setState(prev => {
+                            return {
+                                ...prev,
+                                error: err.response.data.message
+                            }
+                        })
+                    }
+                }
             })
     }
 
     handleCancellation(index, pckg) {
-        console.log(index);
-        console.log(pckg);
+        UserService.deleteFood()
+        .then(res => {
+            if (res.status === 200 && res.data === true) {
+                this.setState(prev => {
+                    return {
+                        ...prev,
+                        success: "Your Active Package's Food is Deleted"
+                    }
+                })
+            }
+        }).catch(err => {
+            if (err.response.status === 403) {
+                this.props.navigation("/login", { state: { message: "You Have been Logged Out! Please Login Again" } })
+                localStorage.removeItem("user");
+                window.location.reload();
+            } else if (err.response.status === 500) {
+                if (err.response.data.messages !== null) {
+                    this.setState(prev => {
+                        return {
+                            ...prev,
+                            valErrors: err.response.data.messages
+                        }
+                    })
+                } else {
+                    this.setState(prev => {
+                        return {
+                            ...prev,
+                            error: err.response.data.message
+                        }
+                    })
+                }
+            }
+        })
     }
 
     render() {
@@ -110,7 +185,7 @@ export class UserModifyFood extends React.Component {
                         <h2>Modify/ Cancel Food</h2>
                         <table className="table table-striped">
                             <thead>
-                                <tr>
+                                <tr className="text-center">
                                     <th>Name</th>
                                     <th>Type</th>
                                     {/* <th>No of Days</th> */}
@@ -125,6 +200,11 @@ export class UserModifyFood extends React.Component {
                             </tbody>
                         </table>
                     </div>
+                    <div id="validation" style={{ color: "red", fontWeight: "700", textAlign: "center" }}>{this.state.error === "" ? (this.state.valErrors === null ? null : this.state.valErrors.map((value, index) => {
+                        return <div>{value}</div>
+                    })) : this.state.error}</div>
+                    <div id="validation" style={{ color: "green", fontWeight: "700", textAlign: "center" }}>{this.state.success === "" ? null : this.state.success}</div>
+                    <div id="validation" style={{ color: "green", fontWeight: "700", textAlign: "center" }}>{this.state.active.length===0? "You do Not Have any Active Food. Please Select a Food with Active Package.": null}</div>
                 </section>
                 <FooterComponent />
             </div>

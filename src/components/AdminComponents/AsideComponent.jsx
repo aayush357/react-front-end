@@ -1,10 +1,12 @@
 import React from "react";
+import "../../css/Home.css"
+import "../../css/Aside.css"
 export class AdminAsideComponent extends React.Component {
     render() {
         return (
             <div>
                 <div className="aside">
-                    <ul className="nav navbar-nav">
+                    <ul className="nav navbar-nav asideinternal">
                         <li><a href="/adminHome">Home</a></li>
                         <li><a href="/addPackage">Add Package</a></li>
                         <li><a href="/addRoom">Add Room</a></li>

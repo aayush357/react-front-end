@@ -1,24 +1,33 @@
 import React from "react";
 import AdminService from "../../services/AdminService";
+import Utilitites from "../../services/Utilitites";
 import { FooterComponent } from "../FooterComponent";
-import { HeaderComponent } from "../HeaderComponent";
 import { AdminAsideComponent } from "./AsideComponent";
 export class AddFoodComponent extends React.Component {
-    constructor() {
+    constructor(props) {
         super();
         this.state = {
             name: "",
             type: "",
             cost: 0,
+            error: "",
+            valErrors: [],
+            success: "",
+            invalidData: true
         }
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChanges = this.handleChanges.bind(this);
     }
 
-
+    componentDidMount() {
+        AdminService.getFoods()
+            .then()
+            .catch(err => {
+                Utilitites.isLoggedIn(err.response.status, this.props.navigation);
+            })
+    }
 
     handleChanges(event) {
-
         this.setState(prev => {
             return {
                 ...prev,
@@ -27,15 +36,46 @@ export class AddFoodComponent extends React.Component {
         })
     }
 
+    componentWillUpdate(nextProps, nextState) {
+        nextState.invalidData = !(nextState.name && nextState.type && nextState.cost);
+    }
+
     handleSubmit(event) {
         event.preventDefault();
         console.log(this.state);
 
         AdminService.addFood(this.state)
-            .then(response => {
-                console.log(response);
+            .then(res => {
+                console.log(res);
+                if (res.status === 200 && res.data === true) {
+                    this.setState(prev => {
+                        return {
+                            ...prev,
+                            success: "Your Food is Added"
+                        }
+                    })
+                }
             }).catch(err => {
                 console.log(err.response);
+                if (err.response.status === 500) {
+                    if (err.response.data.messages !== null) {
+                        this.setState(prev => {
+                            return {
+                                ...prev,
+                                valErrors: err.response.data.messages
+                            }
+                        })
+                    } else {
+                        this.setState(prev => {
+                            return {
+                                ...prev,
+                                error: err.response.data.message
+                            }
+                        })
+                    }
+                } else {
+                    Utilitites.isLoggedIn(err.response.status, this.props.navigation);
+                }
             })
     }
 
@@ -76,10 +116,13 @@ export class AddFoodComponent extends React.Component {
                                                 </div>
                                                 <div className="form-group">
                                                     <div className="text-right">
-                                                        <input type="button" id="button" value="Add Food" className="btn btn-primary" onClick={this.handleSubmit} />
+                                                        <input type="button" disabled={this.state.invalidData} id="button" value="Add Food" className="btn btn-primary" onClick={this.handleSubmit} />
                                                     </div>
                                                 </div>
-                                                <div id="validation"></div>
+                                                <div id="validation" style={{ color: "red", fontWeight: "700", textAlign: "center" }}>{this.state.error === "" ? (this.state.valErrors === null ? null : this.state.valErrors.map((value, index) => {
+                                                return <div>{value}</div>
+                                            })) : this.state.error}</div>
+                                                <div id="validation" style={{ color: "green", fontWeight: "700", textAlign: "center" }}>{this.state.success === "" ? null : this.state.success}</div>
                                             </form>
                                         </div>
                                     </div>

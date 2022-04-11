@@ -1,11 +1,25 @@
 import React from "react";
+import UserService from "../../services/UserService";
 import { FooterComponent } from "../FooterComponent";
-import { HeaderComponent } from "../HeaderComponent";
 import { AsideComponent } from "./AsideComponent";
 
 export class UserHomeComponent extends React.Component {
+    constructor(props){
+        super();
+    }
     
-    
+    componentDidMount(){
+        UserService.getUser()
+        .then(res => {})
+        .catch(err =>{
+            if(err.response.status===403){
+                this.props.navigation("/login", {state: {message: "You Have been Logged Out! Please Login Again"}})
+                localStorage.removeItem("user");
+                window.location.reload();
+            }
+        })
+    }
+
     render() {
         return (
             <div>

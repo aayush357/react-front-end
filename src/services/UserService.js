@@ -53,6 +53,18 @@ class UserService {
         return axios.post(RESOURCE_API_BASE_URL + "/updateUserPackage", packageDTO, { headers: authHeader() })
     }
 
+    deletePackage(){
+        return axios.get(RESOURCE_API_BASE_URL + "/deleteUserPackage", { headers: authHeader() })
+    }
+
+    deleteRoom(){
+        return axios.get(RESOURCE_API_BASE_URL + "/deleteUserRoom", { headers: authHeader() })
+    }
+
+    deleteFood(){
+        return axios.get(RESOURCE_API_BASE_URL + "/deleteUserFood", { headers: authHeader() })
+    }
+
     getUserRooms(){
         return axios.get(RESOURCE_API_BASE_URL + "/getUserRooms", { headers: authHeader() });
     }
@@ -75,6 +87,14 @@ class UserService {
 
     doPayment(confirmationDTO){
         return axios.post(RESOURCE_API_BASE_URL + "/addConfirmation", confirmationDTO, { headers: authHeader() })
+    }
+
+    updatePassLink(requestDTO){
+        return axios.post(RESOURCE_API_BASE_URL + "/updatePassLink", requestDTO)
+    }
+
+    resetPassword(requestDTO){
+        return axios.post(RESOURCE_API_BASE_URL + "/updatePassword", requestDTO)
     }
 }
 

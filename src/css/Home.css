@@ -3,7 +3,6 @@ body{
 	 background-repeat: no-repeat;
     background-attachment: fixed;
     background-size: 100%;
-	
 }
 #header{
 	background-color:#1E1EA9;
@@ -16,10 +15,10 @@ body{
     background-color: #F8F8F8;
     border-color: #E7E7E7;
 }
-.navbar-default .navbar-nav > li > a:hover {
+/* .navbar-default .navbar-nav > li > a:hover {
     background-color:#1E1EA9;
     color:#ffffff;
-}
+} */
 .top-nav ul li	{
 					float : right;
 					padding:10px;

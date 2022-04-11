@@ -27,6 +27,10 @@ import { ModifyAdminFoodComponent } from './components/AdminComponents/ModifyAdm
 import { ModifyAdminRoomComponent } from './components/AdminComponents/ModifyAdminRoomComponent';
 import { HeaderComponent } from './components/HeaderComponent';
 import { HeaderLogoutComponent } from './components/HeaderLogout';
+import { ForgotPasswordAdminComponent } from './components/AdminComponents/ForgotPasswordAdminComponent';
+import { ResetPasswordAdminComponent } from './components/AdminComponents/ResetPasswordAdminComponent';
+import { ForgotPasswordUserComponent } from './components/UserComponents/ForgotPasswordUserComponent';
+import { ResetPasswordUserComponent } from './components/UserComponents/ResetPasswordUserComponent';
 
 function App() {
   const [currentUser, setCurrentUser] = useState(undefined);
@@ -36,9 +40,9 @@ function App() {
     if (user) {
       setCurrentUser(user);
       setInterval(()=>{
-        console.log("aayush");
-        console.log(" ");
-      }, 5000);
+        console.log("calling refresh");
+        authService.refresh();
+      }, 5000);//270000
     }
   }, []);
 
@@ -54,28 +58,32 @@ function App() {
         <Route exact path="/about" element={<About />} />
         <Route exact path="/services" element={<ServiceComponent />} />
         <Route exact path="/contact" element={<ContactComponent />} />
+        
         <Route exact path="/login" element={<LoginComponent />} />
-        <Route exact path="/adminLogin" element={<AdminLoginComponent />} />
-        <Route exact path="/register" element={<RegisterUserComponent />} />
-        <Route exact path="/userHome" element={<UserHomeComponent />} />
-        <Route exact path="/profile" element={<ProfileComponent />} />
-        <Route exact path="/packages" element={<UserPackageComponent />} />
-        <Route exact path="/foods" element={<UserFoodComponent />} />
-        <Route exact path="/rooms" element={<UserRoomComponent />} />
-        <Route exact path="/modifyPackage" element={<UserModifyPackage />} />
-        <Route exact path="/modifyRoom" element={<UserModifyRoom />} />
-        <Route exact path="/modifyFood" element={<UserModifyFood />} />
-        <Route exact path="/confirmation" element={<ConfirmationComponent />} />
+        <Route exact path="/register" element={<RegisterUserComponent navigation={navigate} />} />
+        <Route exact path="/userHome" element={<UserHomeComponent navigation={navigate} />} />
+        <Route exact path="/profile" element={<ProfileComponent navigation={navigate} />} />
+        <Route exact path="/packages" element={<UserPackageComponent navigation={navigate} />} />
+        <Route exact path="/foods" element={<UserFoodComponent navigation={navigate} />} />
+        <Route exact path="/rooms" element={<UserRoomComponent navigation={navigate} />} />
+        <Route exact path="/modifyPackage" element={<UserModifyPackage navigation={navigate} />} />
+        <Route exact path="/modifyRoom" element={<UserModifyRoom navigation={navigate} />} />
+        <Route exact path="/modifyFood" element={<UserModifyFood navigation={navigate} />} />
+        <Route exact path="/confirmation" element={<ConfirmationComponent navigation={navigate} />} />
+        <Route exact path="/forgotUser" element={<ForgotPasswordUserComponent navigation={navigate} />} />
+        <Route exact path="/userReset" element={<ResetPasswordUserComponent navigation={navigate} />} />
 
-        <Route exact path="/adminHome" element={<AdminProfileComponent />} />
-        <Route exact path="/addPackage" element={<AddPackageComponent />} />
-        <Route exact path="/addRoom" element={<AddRoomComponent />} />
-        <Route exact path="/addFood" element={<AddFoodComponent />} />
-        <Route exact path="/modifyPackageAdmin" element={<ModifyAdminPackageComponent />} />
-        <Route exact path="/modifyRoomAdmin" element={<ModifyAdminRoomComponent />} />
+        <Route exact path="/adminLogin" element={<AdminLoginComponent />} />
+        <Route exact path="/adminHome" element={<AdminProfileComponent navigation={navigate} />} />
+        <Route exact path="/adminForgotPassLink" element={<ForgotPasswordAdminComponent navigation={navigate} />} />
+        <Route exact path="/adminReset" element={<ResetPasswordAdminComponent navigation={navigate} />} />
+        <Route exact path="/addPackage" element={<AddPackageComponent navigation={navigate} />} />
+        <Route exact path="/addRoom" element={<AddRoomComponent navigation={navigate} />} />
+        <Route exact path="/addFood" element={<AddFoodComponent navigation={navigate} />} />
+        <Route exact path="/modifyPackageAdmin" element={<ModifyAdminPackageComponent navigation={navigate} />} />
+        <Route exact path="/modifyRoomAdmin" element={<ModifyAdminRoomComponent navigation={navigate} />} />
         <Route exact path="/modifyFoodAdmin" element={<ModifyAdminFoodComponent navigation={navigate}/>} />
       </Routes>
-      {/* <LoginComponent /> */}
     </div>
   );
 }

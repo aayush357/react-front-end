@@ -1,8 +1,21 @@
 import React from "react";
 import { FooterComponent } from "../FooterComponent";
-import { HeaderComponent } from "../HeaderComponent";
+import AdminService from "../../services/AdminService";
 import { AdminAsideComponent } from "./AsideComponent";
+import Utilitites from "../../services/Utilitites";
 export class AdminProfileComponent extends React.Component {
+    constructor(props){
+        super();
+    }
+
+    componentDidMount() {
+        AdminService.getFoods()
+            .then()
+            .catch(err => {
+                Utilitites.isLoggedIn(err.response.status, this.props.navigation);
+            })
+    }
+
     render() {
         return (
             <div>

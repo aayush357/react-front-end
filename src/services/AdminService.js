@@ -49,6 +49,14 @@ class AdminService{
     updateFood(foodDTO){
         return axios.post(RESOURCE_API_BASE_URL + "/updatefood", foodDTO, {headers: authHeader()})
     }
+
+    updatePassLink(requestDTO){
+        return axios.post(RESOURCE_API_BASE_URL + "/updatePassLink", requestDTO)
+    }
+
+    resetPassword(requestDTO){
+        return axios.post(RESOURCE_API_BASE_URL + "/updatePassword", requestDTO)
+    }
 }
 
 export default new AdminService()

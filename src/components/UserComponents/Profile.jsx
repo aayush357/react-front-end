@@ -1,17 +1,18 @@
 import { FooterComponent } from "../FooterComponent";
 import React from "react";
-import { HeaderComponent } from "../HeaderComponent";
 import { AsideComponent } from "./AsideComponent";
 import UserService from "../../services/UserService";
 
 export class ProfileComponent extends React.Component {
-    constructor(){
+    constructor(props){
         super();
         this.state = {
             firstname: "",
             lastname: "",
             email:"",
-            mobile: null
+            mobile: null,
+            error: "",
+            valErrors: []
         }
     }
 
@@ -28,6 +29,11 @@ export class ProfileComponent extends React.Component {
             })
         }).catch(err => {
             console.log(err);
+            if(err.response.status===403){
+                this.props.navigation("/login", {state: {message: "You Have been Logged Out! Please Login Again"}})
+                localStorage.removeItem("user");
+                window.location.reload();
+            }
         })
     }
 
