@@ -44,7 +44,7 @@ const AdminLoginComponent = () => {
                         <div className="card-header">
                             <div className="row" style={{ justifyContent: "space-evenly" }}>
                                 <div className="col-xs-6 card-link">
-                                    <a href="/login" className="active" id="login-form-link">Login</a>
+                                    <a href="/adminLogin" className="active" id="login-form-link">Login</a>
                                 </div>
                             </div>
                             <hr />

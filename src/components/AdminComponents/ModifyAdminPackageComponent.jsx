@@ -18,6 +18,7 @@ export class ModifyAdminPackageComponent extends React.Component {
         this.renderRows = this.renderRows.bind(this);
         // this.handleSubmit=this.handleSubmit.bind(this);
         this.handleChanges = this.handleChanges.bind(this);
+        this.handleCancellation = this.handleCancellation.bind(this);
     }
 
     componentDidMount() {
@@ -68,6 +69,47 @@ export class ModifyAdminPackageComponent extends React.Component {
             return list;
         })
         return list;
+    }
+
+    handleCancellation(index, packageName) {
+        let pckgDTO = {
+            packageName: this.state.packages[index].packageName,
+            place: this.state.packages[index].place,
+            price: this.state.packages[index].price,
+            days: this.state.packages[index].days
+        }
+        AdminService.deletePackage(pckgDTO)
+            .then(res => {
+                if (res.status === 200 && res.data === true) {
+                    this.setState(prev => {
+                        return {
+                            ...prev,
+                            success: "Your Package is Deleted"
+                        }
+                    })
+                }
+            }).catch(err => {
+                if (err.response.status === 500) {
+                    if (err.response.data.messages !== null) {
+                        this.setState(prev => {
+                            return {
+                                ...prev,
+                                valErrors: err.response.data.messages
+                            }
+                        })
+                    } else {
+                        this.setState(prev => {
+                            return {
+                                ...prev,
+                                error: err.response.data.message
+                            }
+                        })
+                    }
+                } else {
+                    console.log(err.response);
+                    Utilitites.isLoggedIn(err.response.status, this.props.navigation);
+                }
+            })
     }
 
     handleModification(index, pckg) {

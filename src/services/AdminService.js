@@ -34,8 +34,24 @@ class AdminService{
         return axios.get(RESOURCE_API_BASE_URL + "/rooms", {headers: authHeader()})
     }
 
+    getConfirmation(){
+        return axios.get(RESOURCE_API_BASE_URL + "/getUsers", {headers: authHeader()})
+    }
+
     getFoods(){
         return axios.get(RESOURCE_API_BASE_URL + "/foods", {headers: authHeader()})
+    }
+
+    deleteFood(food){
+        return axios.post(RESOURCE_API_BASE_URL + "/deletefood", food, {headers: authHeader()})
+    }
+
+    deleteRoom(room){
+        return axios.post(RESOURCE_API_BASE_URL + "/deleteroom", room, {headers: authHeader()})
+    }
+
+    deletePackage(pckg){
+        return axios.post(RESOURCE_API_BASE_URL + "/deletepackage", pckg, {headers: authHeader()})
     }
 
     updatePackage(packageDTO){

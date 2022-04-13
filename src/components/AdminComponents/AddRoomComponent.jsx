@@ -109,8 +109,8 @@ export class AddRoomComponent extends React.Component {
                                                 <div className="form-group">
                                                     <select id="roomType" name="type" className="form-control" onChange={this.handleChanges} required={true}>
                                                         <option selected="true" disabled="disabled">Select</option>
-                                                        <option value="AC">AC</option>
-                                                        <option value="Non-AC">Non-AC</option>
+                                                        <option defaultValue="AC">AC</option>
+                                                        <option defaultValue="Non-AC">Non-AC</option>
                                                     </select>
                                                 </div>
                                                 <div className="form-group">
@@ -119,8 +119,8 @@ export class AddRoomComponent extends React.Component {
                                                 <div className="form-group" >
                                                     <select id="size" name="size" className="form-control" onChange={this.handleChanges} required={true}>
                                                         <option selected="true" disabled="disabled">Select</option>
-                                                        <option value="single">Single</option>
-                                                        <option value="double">Double</option>
+                                                        <option defaultValue="single">Single</option>
+                                                        <option defaultValue="double">Double</option>
                                                     </select>
                                                 </div>
                                                 <div className="form-group">
@@ -131,7 +131,7 @@ export class AddRoomComponent extends React.Component {
                                                 </div>
                                                 <div className="form-group">
                                                     <div className="text-right">
-                                                        <input type="button" id="button" value="Add Room" className="btn btn-primary" onClick={this.handleSubmit} disabled={this.state.invalidData} />
+                                                        <input type="button" id="button" defaultValue="Add Room" className="btn btn-primary" onClick={this.handleSubmit} disabled={this.state.invalidData} />
                                                     </div>
                                                 </div>
                                                 <div id="validation" style={{ color: "red", fontWeight: "700", textAlign: "center" }}>{this.state.error === "" ? (this.state.valErrors === null ? null : this.state.valErrors.map((value, index) => {

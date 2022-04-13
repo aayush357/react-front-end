@@ -57,6 +57,22 @@ export class UserFoodComponent extends React.Component {
                     this.props.navigation("/login", { state: { message: "You Have been Logged Out! Please Login Again" } })
                     localStorage.removeItem("user");
                     window.location.reload();
+                } else if (err.response.status === 500) {
+                    if (err.response.data.messages !== null) {
+                        this.setState(prev => {
+                            return {
+                                ...prev,
+                                valErrors: err.response.data.messages
+                            }
+                        })
+                    } else {
+                        this.setState(prev => {
+                            return {
+                                ...prev,
+                                error: err.response.data.message
+                            }
+                        })
+                    }
                 }
             })
     }
@@ -141,10 +157,11 @@ export class UserFoodComponent extends React.Component {
                                 {this.renderRows()}
                             </tbody>
                         </table>
-                        <form>
-                            <label>Quantity</label>
-                            <input type="number" className="form-control" onChange={this.handleQuantity} />
-                        </form>
+
+                        {this.state.error === "" ? <form><label>Quantity</label>
+                            <input type="number" className="form-control" onChange={this.handleQuantity} /></form> : null}
+
+
                         <div id="validation" style={{ color: "red", fontWeight: "700", textAlign: "center" }}>{this.state.error === "" ? (this.state.valErrors === null ? null : this.state.valErrors.map((value, index) => {
                             return <div>{value}</div>
                         })) : this.state.error}</div>

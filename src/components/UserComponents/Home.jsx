@@ -6,11 +6,18 @@ import { AsideComponent } from "./AsideComponent";
 export class UserHomeComponent extends React.Component {
     constructor(props){
         super();
+        this.state = {
+            firstname: ""
+        }
     }
     
     componentDidMount(){
         UserService.getUser()
-        .then(res => {})
+        .then(res => {
+            this.setState({
+            firstname: res.data.firstname
+            })
+        })
         .catch(err =>{
             if(err.response.status===403){
                 this.props.navigation("/login", {state: {message: "You Have been Logged Out! Please Login Again"}})
@@ -27,7 +34,7 @@ export class UserHomeComponent extends React.Component {
                 <section className="section">
                     <div className="sectiondev">
 
-                        <h3>Welcome To Hell{} </h3>
+                        <h3>Welcome {this.state.firstname} </h3>
                     </div>
                 </section>
                 <FooterComponent />

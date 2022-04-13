@@ -14,6 +14,7 @@ export class AdminAsideComponent extends React.Component {
                         <li><a href="/modifyPackageAdmin">Modify / Delete Package</a></li>
                         <li><a href="/modifyRoomAdmin">Modify / Delete Room</a></li>
                         <li><a href="/modifyFoodAdmin">Modify / Delete Food</a></li>
+                        <li><a href="/totalUsers">Check Users</a></li>
                     </ul>
                 </div>
             </div>

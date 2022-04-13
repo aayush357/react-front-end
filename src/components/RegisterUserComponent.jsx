@@ -105,7 +105,11 @@ export class RegisterUserComponent extends React.Component {
                                                 <input type="text" name="aadhar" id="aadhar" tabIndex="4" className="form-control" placeholder="Aadhar" onChange={this.handleChange} />
                                             </div>
                                             <div className="form-group">
-                                                <input type="text" name="gender" id="gender" tabIndex="5" className="form-control" placeholder="Gender" onChange={this.handleChange} />
+                                                <select id="gender" className="form-control" name="gender" onChange={this.handleChange}>
+                                                        <option selected={true} disabled="disabled">Gender</option>
+                                                        <option defaultValue="Male">Male</option>
+                                                        <option defaultValue="Female">Female</option>
+                                                    </select>
                                             </div>
                                             <div className="form-group">
                                                 <input type="password" name="password" id="password" tabIndex="6" className="form-control" placeholder="Password" onChange={this.handleChange} />

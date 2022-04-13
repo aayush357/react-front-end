@@ -98,8 +98,8 @@ export class AddFoodComponent extends React.Component {
                                                 <div className="form-group">
                                                     <select id="type" className="form-control" name="type" onChange={this.handleChanges}>
                                                         <option selected={true} disabled="disabled">Select</option>
-                                                        <option value="Non-Veg">Non-Veg</option>
-                                                        <option value="Veg">Veg</option>
+                                                        <option defaultValue="Non-Veg">Non-Veg</option>
+                                                        <option defaultValue="Veg">Veg</option>
                                                     </select>
                                                 </div>
                                                 <div className="form-group">

@@ -1,6 +1,7 @@
 import LoginComponent from './components/LoginComponent';
 import { Route, Routes } from "react-router-dom";
 import { About } from './components/About';
+import jwt_decode from 'jwt-decode';
 import { ServiceComponent } from './components/ServiceComponent';
 import { ContactComponent } from './components/ContactComponent';
 import { HomeComponent } from './components/HomeComponent';
@@ -31,6 +32,8 @@ import { ForgotPasswordAdminComponent } from './components/AdminComponents/Forgo
 import { ResetPasswordAdminComponent } from './components/AdminComponents/ResetPasswordAdminComponent';
 import { ForgotPasswordUserComponent } from './components/UserComponents/ForgotPasswordUserComponent';
 import { ResetPasswordUserComponent } from './components/UserComponents/ResetPasswordUserComponent';
+import { TotalUsersComponent } from './components/AdminComponents/TotalUsersComponent';
+import { HistoryComponent } from './components/UserComponents/HistoryComponent';
 
 function App() {
   const [currentUser, setCurrentUser] = useState(undefined);
@@ -39,12 +42,15 @@ function App() {
     const user = authService.getCurrentUser();
     if (user) {
       setCurrentUser(user);
-      setInterval(()=>{
-        console.log("calling refresh");
-        authService.refresh();
-      }, 5000);//270000
+      console.log(jwt_decode(user.access_token));
+      setInterval(() => {
+        authService.checkExpiry(navigate);
+        // console.log("calling refresh" );
+        // authService.refresh(navigate);
+      }, 5000)
+      //270000
     }
-  }, []);
+  }, [navigate]);
 
   return (
     <div className="App">
@@ -58,7 +64,7 @@ function App() {
         <Route exact path="/about" element={<About />} />
         <Route exact path="/services" element={<ServiceComponent />} />
         <Route exact path="/contact" element={<ContactComponent />} />
-        
+
         <Route exact path="/login" element={<LoginComponent />} />
         <Route exact path="/register" element={<RegisterUserComponent navigation={navigate} />} />
         <Route exact path="/userHome" element={<UserHomeComponent navigation={navigate} />} />
@@ -71,6 +77,7 @@ function App() {
         <Route exact path="/modifyFood" element={<UserModifyFood navigation={navigate} />} />
         <Route exact path="/confirmation" element={<ConfirmationComponent navigation={navigate} />} />
         <Route exact path="/forgotUser" element={<ForgotPasswordUserComponent navigation={navigate} />} />
+        <Route exact path="/history" element={<HistoryComponent navigation={navigate} />} />
         <Route exact path="/userReset" element={<ResetPasswordUserComponent navigation={navigate} />} />
 
         <Route exact path="/adminLogin" element={<AdminLoginComponent />} />
@@ -82,7 +89,9 @@ function App() {
         <Route exact path="/addFood" element={<AddFoodComponent navigation={navigate} />} />
         <Route exact path="/modifyPackageAdmin" element={<ModifyAdminPackageComponent navigation={navigate} />} />
         <Route exact path="/modifyRoomAdmin" element={<ModifyAdminRoomComponent navigation={navigate} />} />
-        <Route exact path="/modifyFoodAdmin" element={<ModifyAdminFoodComponent navigation={navigate}/>} />
+        <Route exact path="/modifyFoodAdmin" element={<ModifyAdminFoodComponent navigation={navigate} />} />
+        <Route exact path="/totalUsers" element={<TotalUsersComponent navigation={navigate} />} />
+
       </Routes>
     </div>
   );

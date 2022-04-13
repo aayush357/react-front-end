@@ -15,6 +15,7 @@ export class AsideComponent extends React.Component {
                         <li><a href="/modifyPackage">Modify/ Delete Package</a></li>
                         <li><a href="/modifyRoom">Modify/ Delete Room</a></li>
                         <li><a href="/modifyFood">Modify/ Delete Food</a></li>
+                        <li><a href="/history">History</a></li>
                         <li><a href="/confirmation">Confirmation</a></li>
                     </ul>
 

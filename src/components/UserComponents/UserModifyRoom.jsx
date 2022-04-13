@@ -51,6 +51,22 @@ export class UserModifyRoom extends React.Component {
                     this.props.navigation("/login", { state: { message: "You Have been Logged Out! Please Login Again" } })
                     localStorage.removeItem("user");
                     window.location.reload();
+                } else if(err.response.status === 500){
+                    if (err.response.data.messages !== null) {
+                        this.setState(prev => {
+                            return {
+                                ...prev,
+                                valErrors: err.response.data.messages
+                            }
+                        })
+                    } else {
+                        this.setState(prev => {
+                            return {
+                                ...prev,
+                                error: err.response.data.message
+                            }
+                        })
+                    }
                 }
             })
     }

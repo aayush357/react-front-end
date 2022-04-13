@@ -13,6 +13,10 @@ class UserService {
         })
     }
 
+    updateUser(DTO){
+        return axios.post(RESOURCE_API_BASE_URL + "/updateUser", DTO, {headers: authHeader()});
+    }
+
     registerUser(userDTO){
         return axios.post(RESOURCE_API_BASE_URL + "/add", userDTO)
     }
@@ -35,6 +39,10 @@ class UserService {
 
     getPackages() {
         return axios.get(RESOURCE_API_BASE_URL + "/getPackages", { headers: authHeader() });
+    }
+
+    getUserHistory() {
+        return axios.get(RESOURCE_API_BASE_URL + "/getUsers", { headers: authHeader() });
     }
 
     getRooms(){

@@ -14,7 +14,8 @@ export class ConfirmationComponent extends React.Component {
             error: "",
             valErrors: [],
             modification: "",
-            success: ""
+            success: "",
+            active: []
         }
         this.handlePayment = this.handlePayment.bind(this);
         this.handleCalculateBill = this.handleCalculateBill.bind(this);
@@ -41,6 +42,12 @@ export class ConfirmationComponent extends React.Component {
                     userPackages: arr
                 })
                 console.log(this.state.userPackages);
+                this.setState(prev => {
+                    return {
+                        ...prev,
+                        active: this.state.userPackages.filter(value => value.active === "true")
+                    }
+                })
             }).catch(err => {
                 console.log(err);
                 if (err.response.status === 403) {
@@ -112,7 +119,7 @@ export class ConfirmationComponent extends React.Component {
                         <td>{ele.price}</td>
                         <td>{ele.noOfPersons}</td>
                         <td>{ele.active}</td>
-                        <td><button onClick={() => this.handleCalculateBill(index, ele.packageName)}>Calculate Bill</button></td>
+                        <td><button className="btn btn-primary" onClick={() => this.handleCalculateBill(index, ele.packageName)}>Calculate Bill</button></td>
                     </tr> : null
             )
             return list;
@@ -157,7 +164,7 @@ export class ConfirmationComponent extends React.Component {
                 console.log(err.response.data);
                 if (err.response.status === 403) {
                     this.props.navigation("/login", { state: { message: "You Have been Logged Out! Please Login Again" } })
-                }else if (err.response.status === 500) {
+                } else if (err.response.status === 500) {
                     if (err.response.data.messages !== null) {
                         this.setState(prev => {
                             return {
@@ -231,7 +238,7 @@ export class ConfirmationComponent extends React.Component {
                 <section className="section">
                     <div className="sectiondev">
                         <h2>Confirmation Details</h2>
-                        <table className="table table-striped">
+                        <table className="table table-striped text-center">
                             <thead>
                                 <tr>
                                     <th>Package Name</th>
@@ -249,9 +256,10 @@ export class ConfirmationComponent extends React.Component {
                     </div>
                     {renderAuth()}
                     <div id="validation" style={{ color: "red", fontWeight: "700", textAlign: "center" }}>{this.state.error === "" ? (this.state.valErrors === null ? null : this.state.valErrors.map((value, index) => {
-                                                return <div>{value}</div>
-                                            })) : this.state.error}</div>
+                        return <div>{value}</div>
+                    })) : this.state.error}</div>
                     <div id="validation" style={{ color: "green", fontWeight: "700", textAlign: "center" }}>{this.state.success === "" ? null : this.state.success}</div>
+                    <div id="validation" style={{ color: "green", fontWeight: "700", textAlign: "center" }}>{this.state.active.length === 0 ? "You do Not Have any Active Package. Please Select A package First." : null}</div>
                 </section>
                 <FooterComponent />
             </div>

@@ -17,6 +17,7 @@ export class ModifyAdminRoomComponent extends React.Component {
         }
         this.renderRows = this.renderRows.bind(this);
         // this.handleSubmit=this.handleSubmit.bind(this);
+        this.handleCancellation = this.handleCancellation.bind(this);
         this.handleChanges = this.handleChanges.bind(this);
     }
 
@@ -50,6 +51,46 @@ export class ModifyAdminRoomComponent extends React.Component {
                 [event.target.name]: event.target.value
             }
         })
+    }
+
+    handleCancellation(index, roomName) {
+        let roomDTO = {
+            hotelName: this.state.rooms[index].hotelName,
+            size: this.state.rooms[index].size,
+            type: this.state.rooms[index].type,
+            price: this.state.rooms[index].price
+        }
+        AdminService.deleteRoom(roomDTO)
+            .then(res => {
+                if (res.status === 200 && res.data === true) {
+                    this.setState(prev => {
+                        return {
+                            ...prev,
+                            success: "Your Room is Updated"
+                        }
+                    })
+                }
+            }).catch(err => {
+                if (err.response.status === 500) {
+                    if (err.response.data.messages !== null) {
+                        this.setState(prev => {
+                            return {
+                                ...prev,
+                                valErrors: err.response.data.messages
+                            }
+                        })
+                    } else {
+                        this.setState(prev => {
+                            return {
+                                ...prev,
+                                error: err.response.data.message
+                            }
+                        })
+                    }
+                } else {
+                    Utilitites.isLoggedIn(err.response.status, this.props.navigation);
+                }
+            })
     }
 
     renderRows() {

@@ -18,6 +18,7 @@ export class ModifyAdminFoodComponent extends React.Component {
         }
         this.renderRows = this.renderRows.bind(this);
         // this.handleSubmit=this.handleSubmit.bind(this);
+        this.handleCancellation = this.handleCancellation.bind(this);
         this.handleChanges = this.handleChanges.bind(this);
     }
 
@@ -68,7 +69,44 @@ export class ModifyAdminFoodComponent extends React.Component {
         })
         return list;
     }
-
+    handleCancellation(index, foodName) {
+        let foodDTO = {
+            name: this.state.foods[index].name,
+            cost: this.state.foods[index].cost,
+            type: this.state.foods[index].type
+        }
+        AdminService.deleteFood(foodDTO)
+            .then(res => {
+                if (res.status === 200 && res.data === true) {
+                    this.setState(prev => {
+                        return {
+                            ...prev,
+                            success: "Your Food is Deleted"
+                        }
+                    })
+                }
+            }).catch(err => {
+                if (err.response.status === 500) {
+                    if (err.response.data.messages !== null) {
+                        this.setState(prev => {
+                            return {
+                                ...prev,
+                                valErrors: err.response.data.messages
+                            }
+                        })
+                    } else {
+                        this.setState(prev => {
+                            return {
+                                ...prev,
+                                error: err.response.data.message
+                            }
+                        })
+                    }
+                } else {
+                    Utilitites.isLoggedIn(err.response.status, this.props.navigation);
+                }
+            })
+    }
     handleModification(index, pckg) {
         this.setState(prev => {
             return {
@@ -141,8 +179,8 @@ export class ModifyAdminFoodComponent extends React.Component {
                         </table>
                     </div>
                     <div id="validation" style={{ color: "red", fontWeight: "700", textAlign: "center" }}>{this.state.error === "" ? (this.state.valErrors === null ? null : this.state.valErrors.map((value, index) => {
-                                                return <div>{value}</div>
-                                            })) : this.state.error}</div>
+                        return <div>{value}</div>
+                    })) : this.state.error}</div>
                     <div id="validation" style={{ color: "green", fontWeight: "700", textAlign: "center" }}>{this.state.success === "" ? null : this.state.success}</div>
                 </section>
                 <FooterComponent />
