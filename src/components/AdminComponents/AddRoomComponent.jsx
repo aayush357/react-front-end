@@ -16,7 +16,7 @@ export class AddRoomComponent extends React.Component {
             error: "",
             valErrors: [],
             invalidData: true,
-            success:""
+            success: ""
         }
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChanges = this.handleChanges.bind(this);
@@ -31,17 +31,35 @@ export class AddRoomComponent extends React.Component {
     }
 
     handleChanges(event) {
-
-        this.setState(prev => {
-            return {
-                ...prev,
-                [event.target.name]: event.target.value
+        if (event.target.name === "price") {
+            if (event.target.value <= 0) {
+                this.setState(prev => {
+                    return {
+                        ...prev,
+                        error: "Please Enter " + event.target.name + " Greater Than 0"
+                    }
+                })
+            } else {
+                this.setState(prev => {
+                    return {
+                        ...prev,
+                        error: "",
+                        [event.target.name]: event.target.value
+                    }
+                })
             }
-        })
+        } else {
+            this.setState(prev => {
+                return {
+                    ...prev,
+                    [event.target.name]: event.target.value
+                }
+            })
+        }
     }
 
     componentWillUpdate(nextProps, nextState) {
-        nextState.invalidData = !(nextState.hotelName && nextState.type && nextState.price && nextState.size);
+        nextState.invalidData = !(nextState.hotelName && nextState.type && nextState.price>0 && nextState.size && !nextState.error.includes("Please Enter"));
     }
 
     handleSubmit(event) {
@@ -135,9 +153,9 @@ export class AddRoomComponent extends React.Component {
                                                     </div>
                                                 </div>
                                                 <div id="validation" style={{ color: "red", fontWeight: "700", textAlign: "center" }}>{this.state.error === "" ? (this.state.valErrors === null ? null : this.state.valErrors.map((value, index) => {
-                                                return <div>{value}</div>
-                                            })) : this.state.error}</div>
-                                            <div id="validation" style={{ color: "green", fontWeight: "700", textAlign: "center" }}>{this.state.success === "" ? null : this.state.success}</div>
+                                                    return <div>{value}</div>
+                                                })) : this.state.error}</div>
+                                                <div id="validation" style={{ color: "green", fontWeight: "700", textAlign: "center" }}>{this.state.success === "" ? null : this.state.success}</div>
                                             </form>
                                         </div>
                                     </div>

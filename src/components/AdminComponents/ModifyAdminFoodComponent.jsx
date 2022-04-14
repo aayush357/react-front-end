@@ -118,7 +118,7 @@ export class ModifyAdminFoodComponent extends React.Component {
         let foodDTO = {
             name: foodChoose.name,
             type: this.state.type === "" ? foodChoose.type : this.state.type,
-            cost: this.state.cost === 0 ? foodChoose.cost : parseInt(this.state.cost),
+            cost: this.state.cost <= 0 ? foodChoose.cost : parseInt(this.state.cost),
         }
         console.log(foodDTO);
         console.log(this.state);

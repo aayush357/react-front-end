@@ -123,7 +123,7 @@ export class ModifyAdminRoomComponent extends React.Component {
             hotelName: roomChoose.hotelName,
             type: roomChoose.type,
             size: this.state.size === "" ? roomChoose.size : this.state.size,
-            price: this.state.price === 0 ? roomChoose.price : parseInt(this.state.price),
+            price: this.state.price <= 0 ? roomChoose.price : parseInt(this.state.price),
         }
         console.log(roomDTO);
         console.log(this.state);

@@ -28,16 +28,35 @@ export class AddFoodComponent extends React.Component {
     }
 
     handleChanges(event) {
-        this.setState(prev => {
-            return {
-                ...prev,
-                [event.target.name]: event.target.value
+        if (event.target.name === "cost") {
+            if (event.target.value <= 0) {
+                this.setState(prev => {
+                    return {
+                        ...prev,
+                        error: "Please Enter " + event.target.name + " Greater Than 0"
+                    }
+                })
+            } else {
+                this.setState(prev => {
+                    return {
+                        ...prev,
+                        error: "",
+                        [event.target.name]: event.target.value
+                    }
+                })
             }
-        })
+        } else {
+            this.setState(prev => {
+                return {
+                    ...prev,
+                    [event.target.name]: event.target.value
+                }
+            })
+        }
     }
 
     componentWillUpdate(nextProps, nextState) {
-        nextState.invalidData = !(nextState.name && nextState.type && nextState.cost);
+        nextState.invalidData = !(nextState.name && nextState.type && nextState.cost > 0 && !nextState.error.includes("Please Enter"));
     }
 
     handleSubmit(event) {
@@ -112,7 +131,7 @@ export class AddFoodComponent extends React.Component {
                                                     Enter Cost:
                                                 </div>
                                                 <div className="form-group">
-                                                    <input className="form-control" type="text" id="foodCost" name="cost" required={true} onChange={this.handleChanges} />
+                                                    <input className="form-control" type="number" id="foodCost" name="cost" required={true} onChange={this.handleChanges} />
                                                 </div>
                                                 <div className="form-group">
                                                     <div className="text-right">
@@ -120,8 +139,8 @@ export class AddFoodComponent extends React.Component {
                                                     </div>
                                                 </div>
                                                 <div id="validation" style={{ color: "red", fontWeight: "700", textAlign: "center" }}>{this.state.error === "" ? (this.state.valErrors === null ? null : this.state.valErrors.map((value, index) => {
-                                                return <div>{value}</div>
-                                            })) : this.state.error}</div>
+                                                    return <div>{value}</div>
+                                                })) : this.state.error}</div>
                                                 <div id="validation" style={{ color: "green", fontWeight: "700", textAlign: "center" }}>{this.state.success === "" ? null : this.state.success}</div>
                                             </form>
                                         </div>

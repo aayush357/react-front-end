@@ -150,6 +150,8 @@ export class ConfirmationComponent extends React.Component {
                     foodCost: response.data.foodCost,
                     totalCost: response.data.totalCost,
                     foodName: response.data.foodName,
+                    foodPrice: response.data.foodPrice,
+                    quantity: response.data.quantity,
                     hotelName: response.data.hotelName
                 }
                 let arr = [];
@@ -196,6 +198,8 @@ export class ConfirmationComponent extends React.Component {
                     <td>{ele.hotelName}</td>
                     <td>{ele.roomCost}</td>
                     <td>{ele.foodName}</td>
+                    <td>{ele.foodPrice}</td>
+                    <td>{ele.quantity}</td>
                     <td>{ele.foodCost}</td>
                     <td>{ele.totalCost}</td>
                     <td><button className="btn btn-primary" onClick={() => this.handlePayment(index, ele.packageName)}>Pay</button></td>
@@ -210,23 +214,30 @@ export class ConfirmationComponent extends React.Component {
         const renderAuth = () => {
             if (this.state.bill) {
                 console.log("here inside func");
-                return (<table className="table table-striped">
-                    <thead>
-                        <tr className="text-center">
-                            <th>Package</th>
-                            <th>Place</th>
-                            <th>Package Cost</th>
-                            <th>Hotel Name</th>
-                            <th>Room Cost</th>
-                            <th>Food Name</th>
-                            <th>Food Cost</th>
-                            <th>Total Cost</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {this.renderBill()}
-                    </tbody>
-                </table>)
+                return (
+                    <div>
+                        <table className="table table-striped">
+                            <thead>
+                                <tr className="text-center">
+                                    <th>Package</th>
+                                    <th>Place</th>
+                                    <th>Package Cost</th>
+                                    <th>Hotel Name</th>
+                                    <th>Room Cost</th>
+                                    <th>Food Name</th>
+                                    <th>Food Price</th>
+                                    <th>Food Quantity</th>
+                                    <th>Food Cost</th>
+                                    <th>Total Cost</th>
+                                    <th>Payment</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {this.renderBill()}
+                            </tbody>
+                        </table>
+                    </div>
+                )
             } else {
                 return null
             }
@@ -237,7 +248,7 @@ export class ConfirmationComponent extends React.Component {
                 <AsideComponent />
                 <section className="section">
                     <div className="sectiondev">
-                        <h2>Confirmation Details</h2>
+                        <h2>Package History</h2>
                         <table className="table table-striped text-center">
                             <thead>
                                 <tr>

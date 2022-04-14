@@ -23,12 +23,22 @@ export class UserPackageComponent extends React.Component {
     }
 
     handleDays(event) {
-        this.setState(prev => {
-            return {
-                ...prev,
-                days: event.target.value
-            }
-        })
+        if (event.target.value <= 0) {
+            this.setState(prev => {
+                return {
+                    ...prev,
+                    error: "Please Enter " + event.target.name + " Greater Than 0"
+                }
+            })
+        } else {
+            this.setState(prev => {
+                return {
+                    ...prev,
+                    error: "",
+                    days: event.target.value
+                }
+            })
+        }
     }
 
     handleChanges(event) {
@@ -71,7 +81,7 @@ export class UserPackageComponent extends React.Component {
     }
 
     componentWillUpdate(nextProps, nextState) {
-        nextState.invalidData = !(nextState.days && nextState.noOfPersons && nextState.date);
+        nextState.invalidData = !(nextState.days && nextState.noOfPersons && nextState.date && !nextState.error.includes("Please Enter"));
     }
     handleBooking(index, pckg) {
         console.log(index);
@@ -140,12 +150,22 @@ export class UserPackageComponent extends React.Component {
     }
 
     handlePersons(event) {
-        this.setState(prev => {
-            return {
-                ...prev,
-                noOfPersons: event.target.value
-            }
-        })
+        if (event.target.value <= 0) {
+            this.setState(prev => {
+                return {
+                    ...prev,
+                    error: "Please Enter " + event.target.name + " Greater Than 0"
+                }
+            })
+        } else {
+            this.setState(prev => {
+                return {
+                    ...prev,
+                    error: "",
+                    noOfPersons: event.target.value
+                }
+            })
+        }
     }
 
     render() {
@@ -171,11 +191,11 @@ export class UserPackageComponent extends React.Component {
                         </table>
                         <form>
                             <label >Number of Days</label>
-                            <input type="number" className="form-control" style={{ marginBottom: "10px" }} onChange={this.handleDays} />
+                            <input type="number" className="form-control" name="Days" style={{ marginBottom: "10px" }} onChange={this.handleDays} />
                             <label >Date</label>
                             <input type="date" className="form-control" name="date" style={{ marginBottom: "10px" }} min='2022-01-01' onChange={this.handleChanges} />
                             <label>Number of Persons</label>
-                            <input type="number" className="form-control" onChange={this.handlePersons} />
+                            <input type="number" className="form-control" name="persons" onChange={this.handlePersons} />
                         </form>
                     </div>
                     <div id="validation" style={{ color: "red", fontWeight: "700", textAlign: "center" }}>{this.state.error === "" ? (this.state.valErrors === null ? null : this.state.valErrors.map((value, index) => {

@@ -123,8 +123,8 @@ export class ModifyAdminPackageComponent extends React.Component {
         let pckgDTO = {
             packageName: pckgChoose.packageName,
             place: pckgChoose.place,
-            days: this.state.days === 0 ? pckgChoose.days : parseInt(this.state.days),
-            price: this.state.price === 0 ? pckgChoose.price : parseFloat(this.state.price)
+            days: this.state.days <= 0 ? pckgChoose.days : parseInt(this.state.days),
+            price: this.state.price <= 0 ? pckgChoose.price : parseFloat(this.state.price)
         }
         console.log(pckgDTO);
         console.log(this.state);

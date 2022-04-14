@@ -12,7 +12,8 @@ export class UserFoodComponent extends React.Component {
             valErrors: [],
             error: "",
             invalidData: true,
-            success: ""
+            success: "",
+            validationError: ""
         }
         this.renderRows = this.renderRows.bind(this);
         this.handleBooking = this.handleBooking.bind(this);
@@ -78,16 +79,26 @@ export class UserFoodComponent extends React.Component {
     }
 
     handleQuantity(event) {
-        this.setState(prev => {
-            return {
-                ...prev,
-                quantity: event.target.value
-            }
-        })
+        if (event.target.value <= 0) {
+            this.setState(prev => {
+                return {
+                    ...prev,
+                    validationError: "Please Enter " + event.target.name + " Greater Than 0"
+                }
+            })
+        } else {
+            this.setState(prev => {
+                return {
+                    ...prev,
+                    validationError: "",
+                    quantity: event.target.value
+                }
+            })
+        }
     }
 
     componentWillUpdate(nextProps, nextState) {
-        nextState.invalidData = !(nextState.quantity);
+        nextState.invalidData = !(nextState.quantity && !nextState.validationError.includes("Please Enter"));
     }
 
     handleBooking(index, foodName) {
@@ -159,9 +170,9 @@ export class UserFoodComponent extends React.Component {
                         </table>
 
                         {this.state.error === "" ? <form><label>Quantity</label>
-                            <input type="number" className="form-control" onChange={this.handleQuantity} /></form> : null}
+                            <input type="number" className="form-control" name="quantity" onChange={this.handleQuantity} /></form> : null}
 
-
+                        <div id="err" style={{ color: "red", fontWeight: "700", textAlign: "center" }}>{this.state.validationError === "" ? null : this.state.validationError}</div>
                         <div id="validation" style={{ color: "red", fontWeight: "700", textAlign: "center" }}>{this.state.error === "" ? (this.state.valErrors === null ? null : this.state.valErrors.map((value, index) => {
                             return <div>{value}</div>
                         })) : this.state.error}</div>
