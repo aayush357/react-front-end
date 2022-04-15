@@ -1,5 +1,4 @@
 import React from "react";
-import { HeaderComponent } from "./HeaderComponent";
 import { FooterComponent } from "./FooterComponent";
 export class ContactComponent extends React.Component {
     render() {

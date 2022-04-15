@@ -242,7 +242,6 @@ export class ConfirmationComponent extends React.Component {
                 return null
             }
         }
-
         return (
             <div>
                 <AsideComponent />

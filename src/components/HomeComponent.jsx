@@ -1,6 +1,5 @@
 import React from "react";
 import { FooterComponent } from "./FooterComponent";
-import { HeaderComponent } from "./HeaderComponent";
 import "../css/Login.css";
 import "../css/Home.css";
 

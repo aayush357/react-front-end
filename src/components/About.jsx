@@ -1,6 +1,5 @@
 import { FooterComponent } from "./FooterComponent";
 import React from "react"
-import { HeaderComponent } from "./HeaderComponent";
 
 export class About extends React.Component {
     render() {

@@ -1,6 +1,5 @@
 import React from "react";
 import { FooterComponent } from "./FooterComponent";
-import { HeaderComponent } from "./HeaderComponent";
 
 export class ServiceComponent extends React.Component {
     render() {
