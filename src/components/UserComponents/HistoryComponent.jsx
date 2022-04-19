@@ -127,9 +127,9 @@ export class HistoryComponent extends React.Component {
                                 <tbody>
                                     {this.renderRows()}
                                 </tbody>
-                        <div id="validation" style={{ color: "green", fontWeight: "700", textAlign: "center" }}>{this.state.confirmations.length === 0 ? "No History Present" : null}</div>
                             </table>
                         </div>
+                                <div id="validation" style={{ color: "green", fontWeight: "700", textAlign: "center" }}>{this.state.confirmations.length === 0 ? "No History Present" : null}</div>
                         <div id="validation" style={{ color: "red", fontWeight: "700", textAlign: "center" }}>{this.state.error === "" ? (this.state.valErrors === null ? null : this.state.valErrors.map((value, index) => {
                             return <div>{value}</div>
                         })) : this.state.error}</div>

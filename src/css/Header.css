@@ -6,7 +6,8 @@ body{
 	
 }
 #header{
-	background-color:#1E1EA9;
+	/* background-color:#1E1EA9; */
+	background-color:transparent;
 	margin-top:0px;
 	top:0px;
 	padding-top:10px;
@@ -17,7 +18,8 @@ body{
     border-color: #E7E7E7;
 }
 .navbar-default .navbar-nav > li > a:hover {
-    background-color:#1E1EA9;
+    /* background-color:#1E1EA9; */
+	background-color:transparent;
     color:#ffffff;
 }
 .top-nav ul li	{
@@ -25,7 +27,8 @@ body{
 					padding:10px;
 					padding-bottom:25px;
 					list-style : none;
-					background-color:#1E1EA9;
+					/* background-color:#1E1EA9; */
+					background-color:transparent;
 					border-radius:5px;
 					padding-top:15px;
 					position: sticky;	

@@ -46,10 +46,12 @@ const logout = () => {
 
 const checkExpiry = (navigate) => {
   let expiry = JSON.parse(localStorage.getItem("expiry"))
-  console.log("expiry date" + expiry);
+  // console.log("expiry date" + expiry);
   let diff = expiry - new Date() / 1000;
-  console.log(diff);
+  // console.log(diff);
   if (diff < 30) {
+    console.log("expiry date" + expiry);
+    console.log(diff);
     console.log("calling refresh");
     refresh(navigate);
   }
@@ -83,8 +85,8 @@ const refresh = (navigate) => {
   }
 }
 
-const start= () => {
-  return axios.get(RESOURCE_API_BASE_URL+"/api/start");
+const start = () => {
+  return axios.get(RESOURCE_API_BASE_URL + "/api/start");
 }
 
 const authService = {

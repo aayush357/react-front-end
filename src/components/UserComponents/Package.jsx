@@ -213,7 +213,7 @@ export class UserPackageComponent extends React.Component {
                     <section className="section">
                         <div className="sectiondev">
                             <h3>Book Package</h3>
-                            <div style={{ overflow: "hidden", overflowY: "scroll", height: "330px" }}>
+                            <div style={{ overflow: "hidden", overflowY: "scroll", height: "310px" }}>
                                 <table className="table table-striped" id="packagetable">
                                     <thead>
                                         <tr className="text-center">

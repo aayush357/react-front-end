@@ -31,8 +31,7 @@ export class About extends React.Component {
                     <div id="matter">
                         <p>&emsp;&emsp;&emsp;&emsp;Online Tourism Management System is an integrated web-based software
                             developed for tour operating
-                            companies. The main aim of this project is to help the tourism companies to manage their customers, hotels,
-                            vehicles and agents. It makes all operations of the tour company easy and accurate
+                            companies. The main aim of this project is to help the tourism companies to manage their customers, hotels and agents. It makes all operations of the tour company easy and accurate
                         </p>
                         <p>&emsp;&emsp;&emsp;&emsp;
                             Tourism is travel for pleasure; also the theory and practice of touring, the business of attracting, accommodating,
