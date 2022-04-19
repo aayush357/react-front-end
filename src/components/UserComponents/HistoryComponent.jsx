@@ -1,6 +1,7 @@
 import React from "react";
 import UserService from "../../services/UserService";
 import { FooterComponent } from "../FooterComponent";
+import LoaderComponent from "../LoaderComponent";
 import { AsideComponent } from "./AsideComponent";
 export class HistoryComponent extends React.Component {
     constructor(props) {
@@ -9,6 +10,7 @@ export class HistoryComponent extends React.Component {
             confirmations: [],
             error: "",
             valErrors: [],
+            loading: true
         }
         this.renderRows = this.renderRows.bind(this);
         // this.handleSubmit=this.handleSubmit.bind(this);
@@ -62,6 +64,13 @@ export class HistoryComponent extends React.Component {
                     localStorage.removeItem("user");
                     window.location.reload();
                 }
+            }).finally(() => {
+                this.setState(prev => {
+                    return {
+                        ...prev,
+                        loading: false
+                    }
+                })
             })
     }
 
@@ -87,38 +96,48 @@ export class HistoryComponent extends React.Component {
     }
 
     render() {
-        return (
-            <div>
-                <AsideComponent />
-                <section className="section">
-                    <div className="sectiondev">
-                        <h3>Total Revenue Generated</h3>
-                        <table className="table table-striped">
-                            <thead>
-                                <tr className="text-center">
-                                    <th>Package Name</th>
-                                    <th>Place</th>
-                                    <th>Package Cost</th>
-                                    <th>Hotel Name</th>
-                                    <th>Room Cost</th>
-                                    <th>Food Name</th>
-                                    <th>Food Cost</th>
-                                    <th>Total Cost</th>
-                                    <th>Date Started</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {this.renderRows()}
-                            </tbody>
-                        </table>
-                    </div>
-                    <div id="validation" style={{ color: "red", fontWeight: "700", textAlign: "center" }}>{this.state.error === "" ? (this.state.valErrors === null ? null : this.state.valErrors.map((value, index) => {
-                        return <div>{value}</div>
-                    })) : this.state.error}</div>
-                    <div id="validation" style={{ color: "green", fontWeight: "700", textAlign: "center" }}>{this.state.success === "" ? null : this.state.success}</div>
-                </section>
-                <FooterComponent />
-            </div>
-        )
+        if (this.loading === true) {
+            return (
+                <div>
+                    <AsideComponent />
+                    <LoaderComponent message={"Loading ..."} />
+                </div>
+            )
+        } else {
+            return (
+                <div>
+                    <AsideComponent />
+                    <section className="section">
+                        <div className="sectiondev">
+                            <h3>History</h3>
+                            <table className="table table-striped">
+                                <thead>
+                                    <tr className="text-center">
+                                        <th>Package Name</th>
+                                        <th>Place</th>
+                                        <th>Package Cost</th>
+                                        <th>Hotel Name</th>
+                                        <th>Room Cost</th>
+                                        <th>Food Name</th>
+                                        <th>Food Cost</th>
+                                        <th>Total Cost</th>
+                                        <th>Date Started</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {this.renderRows()}
+                                </tbody>
+                        <div id="validation" style={{ color: "green", fontWeight: "700", textAlign: "center" }}>{this.state.confirmations.length === 0 ? "No History Present" : null}</div>
+                            </table>
+                        </div>
+                        <div id="validation" style={{ color: "red", fontWeight: "700", textAlign: "center" }}>{this.state.error === "" ? (this.state.valErrors === null ? null : this.state.valErrors.map((value, index) => {
+                            return <div>{value}</div>
+                        })) : this.state.error}</div>
+                        <div id="validation" style={{ color: "green", fontWeight: "700", textAlign: "center" }}>{this.state.success === "" ? null : this.state.success}</div>
+                    </section>
+                    <FooterComponent />
+                </div>
+            )
+        }
     }
 }

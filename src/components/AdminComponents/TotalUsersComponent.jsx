@@ -111,7 +111,7 @@ export class TotalUsersComponent extends React.Component {
                                 </tr>
                             </thead>
                             <tbody>
-                                {this.renderRows()}
+                                {this.state.confirmations.length===0? <tr id="err" style={{ color: "green", fontWeight: "700", textAlign: "center" }}><td colSpan={12}>Users have not Selected Any Packages</td></tr>:this.renderRows()}
                             </tbody>
                         </table>
                     </div>

@@ -34,6 +34,7 @@ import { ForgotPasswordUserComponent } from './components/UserComponents/ForgotP
 import { ResetPasswordUserComponent } from './components/UserComponents/ResetPasswordUserComponent';
 import { TotalUsersComponent } from './components/AdminComponents/TotalUsersComponent';
 import { HistoryComponent } from './components/UserComponents/HistoryComponent';
+import PageNotFound from './components/PageNotFoundComponent';
 
 function App() {
   const [currentUser, setCurrentUser] = useState(undefined);
@@ -92,6 +93,7 @@ function App() {
         <Route exact path="/modifyFoodAdmin" element={<ModifyAdminFoodComponent navigation={navigate} />} />
         <Route exact path="/totalUsers" element={<TotalUsersComponent navigation={navigate} />} />
 
+        <Route exact path="/*" element={<PageNotFound />} />
       </Routes>
     </div>
   );

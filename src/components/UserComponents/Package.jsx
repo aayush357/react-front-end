@@ -1,7 +1,9 @@
 import React from "react";
 import UserService from "../../services/UserService";
 import { FooterComponent } from "../FooterComponent";
+import LoaderComponent from "../LoaderComponent";
 import { AsideComponent } from "./AsideComponent";
+import "../../css/table.css"
 export class UserPackageComponent extends React.Component {
     constructor(props) {
         super();
@@ -13,7 +15,9 @@ export class UserPackageComponent extends React.Component {
             error: "",
             valErrors: [],
             success: "",
-            invalidData: true
+            invalidData: true,
+            loading: true,
+            today: new Date().toISOString().split('T')[0]
         }
         this.renderRows = this.renderRows.bind(this);
         this.handleBooking = this.handleBooking.bind(this);
@@ -52,8 +56,8 @@ export class UserPackageComponent extends React.Component {
     }
 
     componentDidMount() {
-        var today = new Date().toISOString().split('T')[0];
-        document.getElementsByName("date")[0].setAttribute('min', today);
+        // var today = new Date().toISOString().split('T')[0];
+        // document.getElementsByName("date")[0].setAttribute('min', today);
         UserService.getPackages()
             .then(response => {
                 console.log(response);
@@ -76,7 +80,33 @@ export class UserPackageComponent extends React.Component {
                     this.props.navigation("/login", { state: { message: "You Have been Logged Out! Please Login Again" } })
                     localStorage.removeItem("user");
                     window.location.reload();
+                } else if (err.response.status === 500) {
+                    if (err.response.data.messages !== null) {
+                        this.setState(prev => {
+                            return {
+                                ...prev,
+                                valErrors: err.response.data.messages
+                            }
+                        })
+                    } else {
+                        this.setState(prev => {
+                            return {
+                                ...prev,
+                                error: err.response.data.message
+                            }
+                        })
+                    }
                 }
+            }).finally(() => {
+                // if (this.state.error === "") {
+                //     document.getElementsByName("date")[0].setAttribute('min', today);
+                // }
+                this.setState(prev => {
+                    return {
+                        ...prev,
+                        loading: false
+                    }
+                })
             })
     }
 
@@ -169,42 +199,54 @@ export class UserPackageComponent extends React.Component {
     }
 
     render() {
-        return (
-            <div>
-                <AsideComponent />
-                <section className="section">
-                    <div className="sectiondev">
-                        <h3>Book Package</h3>
-                        <table className="table table-striped" id="packagetable">
-                            <thead>
-                                <tr className="text-center">
-                                    <th>Package Name</th>
-                                    <th>Place</th>
-                                    <th>No of Days</th>
-                                    <th>Cost</th>
-                                    <th>Book</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {this.renderRows()}
-                            </tbody>
-                        </table>
-                        <form>
-                            <label >Number of Days</label>
-                            <input type="number" className="form-control" name="Days" style={{ marginBottom: "10px" }} onChange={this.handleDays} />
-                            <label >Date</label>
-                            <input type="date" className="form-control" name="date" style={{ marginBottom: "10px" }} min='2022-01-01' onChange={this.handleChanges} />
-                            <label>Number of Persons</label>
-                            <input type="number" className="form-control" name="persons" onChange={this.handlePersons} />
-                        </form>
-                    </div>
-                    <div id="validation" style={{ color: "red", fontWeight: "700", textAlign: "center" }}>{this.state.error === "" ? (this.state.valErrors === null ? null : this.state.valErrors.map((value, index) => {
-                        return <div>{value}</div>
-                    })) : this.state.error}</div>
-                    <div id="validation" style={{ color: "green", fontWeight: "700", textAlign: "center" }}>{this.state.success === "" ? null : this.state.success}</div>
-                </section>
-                <FooterComponent />
-            </div>
-        )
+        if (this.state.loading === true) {
+            return (
+                <div>
+                    <AsideComponent />
+                    <LoaderComponent message={"Loading ..."} />
+                </div>
+            )
+        } else {
+            return (
+                <div>
+                    <AsideComponent />
+                    <section className="section">
+                        <div className="sectiondev">
+                            <h3>Book Package</h3>
+                            <div style={{ overflow: "hidden", overflowY: "scroll", height: "330px" }}>
+                                <table className="table table-striped" id="packagetable">
+                                    <thead>
+                                        <tr className="text-center">
+                                            <th>Package Name</th>
+                                            <th>Place</th>
+                                            <th>No of Days</th>
+                                            <th>Cost</th>
+                                            <th>Book</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {this.renderRows()}
+                                    </tbody>
+                                </table>
+                            </div>
+                            {this.state.error === "" ?
+                                <form>
+                                    <label >Number of Days</label>
+                                    <input type="number" className="form-control" name="Days" style={{ marginBottom: "10px" }} onChange={this.handleDays} />
+                                    <label >Date</label>
+                                    <input type="date" className="form-control" name="date" style={{ marginBottom: "10px" }} min={this.state.today} onChange={this.handleChanges} />
+                                    <label>Number of Persons</label>
+                                    <input type="number" className="form-control" name="persons" onChange={this.handlePersons} />
+                                </form> : null}
+                        </div>
+                        <div id="validation" style={{ color: "green", fontWeight: "700", textAlign: "center" }}>{this.state.success === "" ? null : this.state.success}</div>
+                        <div id="validation" style={{ color: "red", fontWeight: "700", textAlign: "center" }}>{this.state.error === "" ? (this.state.valErrors === null ? null : this.state.valErrors.map((value, index) => {
+                            return <div>{value}</div>
+                        })) : this.state.error}</div>
+                    </section>
+                    <FooterComponent />
+                </div>
+            )
+        }
     }
 }

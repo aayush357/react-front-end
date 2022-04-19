@@ -2,7 +2,8 @@ import axios from "axios";
 import jwt_decode from "jwt-decode";
 import authHeader from "./AuthHeader";
 
-const RESOURCE_API_BASE_URL = "http://localhost:8080";
+// const RESOURCE_API_BASE_URL = "http://localhost:8080";
+const RESOURCE_API_BASE_URL = "https://cdac-project-backend.herokuapp.com";
 
 const login = (loginDetails) => {
   const header = {
@@ -82,12 +83,17 @@ const refresh = (navigate) => {
   }
 }
 
+const start= () => {
+  return axios.get(RESOURCE_API_BASE_URL+"/api/start");
+}
+
 const authService = {
   login,
   logout,
   getCurrentUser,
   refresh,
-  checkExpiry
+  checkExpiry,
+  start
 };
 
 export default authService;

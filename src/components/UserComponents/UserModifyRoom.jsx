@@ -1,6 +1,7 @@
 import React from "react";
 import UserService from "../../services/UserService";
 import { FooterComponent } from "../FooterComponent";
+import LoaderComponent from "../LoaderComponent";
 import { AsideComponent } from "./AsideComponent";
 
 export class UserModifyRoom extends React.Component {
@@ -13,7 +14,8 @@ export class UserModifyRoom extends React.Component {
             error: "",
             valErrors: [],
             success: "",
-            active: []
+            active: [],
+            loading: true
         }
         this.renderRows = this.renderRows.bind(this);
         this.handleModification = this.handleModification.bind(this);
@@ -39,9 +41,9 @@ export class UserModifyRoom extends React.Component {
                     userRooms: arr
                 })
                 this.setState(prev => {
-                    return{
+                    return {
                         ...prev,
-                        active: this.state.userRooms.filter(value => value.active==="true")
+                        active: this.state.userRooms.filter(value => value.active === "true")
                     }
                 })
                 console.log(this.state.userRooms);
@@ -51,7 +53,7 @@ export class UserModifyRoom extends React.Component {
                     this.props.navigation("/login", { state: { message: "You Have been Logged Out! Please Login Again" } })
                     localStorage.removeItem("user");
                     window.location.reload();
-                } else if(err.response.status === 500){
+                } else if (err.response.status === 500) {
                     if (err.response.data.messages !== null) {
                         this.setState(prev => {
                             return {
@@ -68,6 +70,13 @@ export class UserModifyRoom extends React.Component {
                         })
                     }
                 }
+            }).finally(() => {
+                this.setState(prev => {
+                    return {
+                        ...prev,
+                        loading: false
+                    }
+                })
             })
     }
 
@@ -159,71 +168,80 @@ export class UserModifyRoom extends React.Component {
 
     handleCancellation(index, pckg) {
         UserService.deleteRoom()
-        .then(res => {
-            if (res.status === 200 && res.data === true) {
-                this.setState(prev => {
-                    return {
-                        ...prev,
-                        success: "Your Active Package's Room is Deleted"
-                    }
-                })
-            }
-        }).catch(err => {
-            if (err.response.status === 403) {
-                this.props.navigation("/login", { state: { message: "You Have been Logged Out! Please Login Again" } })
-                localStorage.removeItem("user");
-                window.location.reload();
-            } else if (err.response.status === 500) {
-                if (err.response.data.messages !== null) {
+            .then(res => {
+                if (res.status === 200 && res.data === true) {
                     this.setState(prev => {
                         return {
                             ...prev,
-                            valErrors: err.response.data.messages
-                        }
-                    })
-                } else {
-                    this.setState(prev => {
-                        return {
-                            ...prev,
-                            error: err.response.data.message
+                            success: "Your Active Package's Room is Deleted"
                         }
                     })
                 }
-            }
-        })
+            }).catch(err => {
+                if (err.response.status === 403) {
+                    this.props.navigation("/login", { state: { message: "You Have been Logged Out! Please Login Again" } })
+                    localStorage.removeItem("user");
+                    window.location.reload();
+                } else if (err.response.status === 500) {
+                    if (err.response.data.messages !== null) {
+                        this.setState(prev => {
+                            return {
+                                ...prev,
+                                valErrors: err.response.data.messages
+                            }
+                        })
+                    } else {
+                        this.setState(prev => {
+                            return {
+                                ...prev,
+                                error: err.response.data.message
+                            }
+                        })
+                    }
+                }
+            })
     }
 
     render() {
-        return (
-            <div>
-                <AsideComponent />
-                <section className="section">
-                    <div className="sectiondev">
-                        <h2>Modify/ Cancel Room</h2>
-                        <table className="table table-striped">
-                            <thead>
-                                <tr className="text-center">
-                                    <th>Hotel Name</th>
-                                    <th>Room Type</th>
-                                    <th>Room Size</th>
-                                    <th>Active</th>
-                                    <th>Modify</th>
-                                    <th>Cancel</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {this.renderRows()}
-                            </tbody>
-                        </table>
-                    </div>
-                    <div id="validation" style={{ color: "red", fontWeight: "700", textAlign: "center" }}>{this.state.error === "" ? (this.state.valErrors === null ? null : this.state.valErrors.map((value, index) => {
-                        return <div>{value}</div>
-                    })) : this.state.error}</div>
-                    <div id="validation" style={{ color: "green", fontWeight: "700", textAlign: "center" }}>{this.state.success === "" ? null : this.state.success}</div>
-                    <div id="validation" style={{ color: "green", fontWeight: "700", textAlign: "center" }}>{this.state.active.length===0? "You do Not Have any Active Room. Please Select a Room with Active Package.": null}</div>
-                </section>
-                <FooterComponent />
-            </div>
-        )
+        if (this.loading === true) {
+            return (
+                <div>
+                    <AsideComponent />
+                    <LoaderComponent message={"Loading ..."} />
+                </div>
+            )
+        } else {
+            return (
+                <div>
+                    <AsideComponent />
+                    <section className="section">
+                        <div className="sectiondev">
+                            <h2>Modify/ Cancel Room</h2>
+                            <table className="table table-striped">
+                                <thead>
+                                    <tr className="text-center">
+                                        <th>Hotel Name</th>
+                                        <th>Room Type</th>
+                                        <th>Room Size</th>
+                                        <th>Active</th>
+                                        <th>Modify</th>
+                                        <th>Cancel</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {this.renderRows()}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="validation" style={{ color: "red", fontWeight: "700", textAlign: "center" }}>{this.state.error === "" ? (this.state.valErrors === null ? null : this.state.valErrors.map((value, index) => {
+                            return <div>{value}</div>
+                        })) : this.state.error}</div>
+                        <div id="validation" style={{ color: "green", fontWeight: "700", textAlign: "center" }}>{this.state.success === "" ? null : this.state.success}</div>
+                        <div id="validation" style={{ color: "green", fontWeight: "700", textAlign: "center" }}>{this.state.active.length === 0 ? "You do Not Have any Active Room. Please Select a Room with Active Package." : null}</div>
+                    </section>
+                    <FooterComponent />
+                </div>
+            )
+        }
     }
 }

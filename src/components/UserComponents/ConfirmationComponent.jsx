@@ -1,6 +1,7 @@
 import React from "react";
 import UserService from "../../services/UserService";
 import { FooterComponent } from "../FooterComponent";
+import LoaderComponent from "../LoaderComponent";
 import { AsideComponent } from "./AsideComponent";
 
 export class ConfirmationComponent extends React.Component {
@@ -15,7 +16,8 @@ export class ConfirmationComponent extends React.Component {
             valErrors: [],
             modification: "",
             success: "",
-            active: []
+            active: [],
+            loading: true
         }
         this.handlePayment = this.handlePayment.bind(this);
         this.handleCalculateBill = this.handleCalculateBill.bind(this);
@@ -62,10 +64,23 @@ export class ConfirmationComponent extends React.Component {
                         }
                     })
                 }
+            }).finally(() => {
+                this.setState(prev => {
+                    return {
+                        ...prev,
+                        loading: false
+                    }
+                })
             })
     }
 
     handlePayment(index, pckg) {
+        this.setState(prev => {
+            return {
+                ...prev,
+                loading: !prev.loading
+            }
+        })
         console.log(index);
         console.log(pckg);
         let pckgChoose = this.state.userPackages[index];
@@ -105,6 +120,13 @@ export class ConfirmationComponent extends React.Component {
                         })
                     }
                 }
+            }).finally(() => {
+                this.setState(prev => {
+                    return {
+                        ...prev,
+                        loading: !prev.loading
+                    }
+                })
             })
     }
 
@@ -211,68 +233,77 @@ export class ConfirmationComponent extends React.Component {
     }
 
     render() {
-        const renderAuth = () => {
-            if (this.state.bill) {
-                console.log("here inside func");
-                return (
-                    <div>
-                        <table className="table table-striped">
-                            <thead>
-                                <tr className="text-center">
-                                    <th>Package</th>
-                                    <th>Place</th>
-                                    <th>Package Cost</th>
-                                    <th>Hotel Name</th>
-                                    <th>Room Cost</th>
-                                    <th>Food Name</th>
-                                    <th>Food Price</th>
-                                    <th>Food Quantity</th>
-                                    <th>Food Cost</th>
-                                    <th>Total Cost</th>
-                                    <th>Payment</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {this.renderBill()}
-                            </tbody>
-                        </table>
-                    </div>
-                )
-            } else {
-                return null
+        if (this.state.loading) {
+            return (
+                <div>
+                    <AsideComponent />
+                    <LoaderComponent message={"Loading ..."}/>
+                </div>
+            )
+        } else {
+            const renderAuth = () => {
+                if (this.state.bill) {
+                    console.log("here inside func");
+                    return (
+                        <div>
+                            <table className="table table-striped">
+                                <thead>
+                                    <tr className="text-center">
+                                        <th>Package</th>
+                                        <th>Place</th>
+                                        <th>Package Cost</th>
+                                        <th>Hotel Name</th>
+                                        <th>Room Cost</th>
+                                        <th>Food Name</th>
+                                        <th>Food Price</th>
+                                        <th>Food Quantity</th>
+                                        <th>Food Cost</th>
+                                        <th>Total Cost</th>
+                                        <th>Payment</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {this.renderBill()}
+                                </tbody>
+                            </table>
+                        </div>
+                    )
+                } else {
+                    return null
+                }
             }
+            return (
+                <div>
+                    <AsideComponent />
+                    <section className="section">
+                        <div className="sectiondev">
+                            <h2>Package History</h2>
+                            <table className="table table-striped text-center">
+                                <thead>
+                                    <tr>
+                                        <th>Package Name</th>
+                                        <th>Place</th>
+                                        <th>Cost</th>
+                                        <th>No of Persons</th>
+                                        <th>Active</th>
+                                        <th>Calculate Bill</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {this.renderRows()}
+                                </tbody>
+                            </table>
+                        </div>
+                        {renderAuth()}
+                        <div id="validation" style={{ color: "red", fontWeight: "700", textAlign: "center" }}>{this.state.error === "" ? (this.state.valErrors === null ? null : this.state.valErrors.map((value, index) => {
+                            return <div>{value}</div>
+                        })) : this.state.error}</div>
+                        <div id="validation" style={{ color: "green", fontWeight: "700", textAlign: "center" }}>{this.state.success === "" ? null : this.state.success}</div>
+                        <div id="validation" style={{ color: "green", fontWeight: "700", textAlign: "center" }}>{this.state.active.length === 0 ? "You do Not Have any Active Package. Please Select A package First." : null}</div>
+                    </section>
+                    <FooterComponent />
+                </div>
+            )
         }
-        return (
-            <div>
-                <AsideComponent />
-                <section className="section">
-                    <div className="sectiondev">
-                        <h2>Package History</h2>
-                        <table className="table table-striped text-center">
-                            <thead>
-                                <tr>
-                                    <th>Package Name</th>
-                                    <th>Place</th>
-                                    <th>Cost</th>
-                                    <th>No of Persons</th>
-                                    <th>Active</th>
-                                    <th>Calculate Bill</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {this.renderRows()}
-                            </tbody>
-                        </table>
-                    </div>
-                    {renderAuth()}
-                    <div id="validation" style={{ color: "red", fontWeight: "700", textAlign: "center" }}>{this.state.error === "" ? (this.state.valErrors === null ? null : this.state.valErrors.map((value, index) => {
-                        return <div>{value}</div>
-                    })) : this.state.error}</div>
-                    <div id="validation" style={{ color: "green", fontWeight: "700", textAlign: "center" }}>{this.state.success === "" ? null : this.state.success}</div>
-                    <div id="validation" style={{ color: "green", fontWeight: "700", textAlign: "center" }}>{this.state.active.length === 0 ? "You do Not Have any Active Package. Please Select A package First." : null}</div>
-                </section>
-                <FooterComponent />
-            </div>
-        )
     }
 }

@@ -1,8 +1,29 @@
 import { FooterComponent } from "./FooterComponent";
 import React from "react"
+import LoaderComponent from "./LoaderComponent";
+import authService from "../services/AuthService";
 
 export class About extends React.Component {
+    constructor() {
+        super();
+        this.state = {
+            loading: true
+        }
+    }
+    componentDidMount() {
+        authService.start()
+        .finally(() => {
+            this.setState({
+                loading: false
+            })
+        })
+    }
     render() {
+        if (this.state.loading) {
+            return (
+                <LoaderComponent message={"Loading ..."} />
+            )
+        } else {
         return (
             <div>
                 <div id="sec">
@@ -30,6 +51,6 @@ export class About extends React.Component {
                 </div>
                 <FooterComponent />
             </div>
-        )
+        )}
     }
 }

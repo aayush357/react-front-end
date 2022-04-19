@@ -2,7 +2,7 @@ import React from "react";
 import UserService from "../../services/UserService";
 import { FooterComponent } from "../FooterComponent";
 import { AsideComponent } from "./AsideComponent";
-
+import "../../css/table.css"
 export class UserFoodComponent extends React.Component {
     constructor(props) {
         super();
@@ -155,6 +155,7 @@ export class UserFoodComponent extends React.Component {
                 <section className="section">
                     <div className="sectiondev">
                         <h3>Book Food</h3>
+                        <div style={{overflow:"hidden", overflowY:"scroll", height:"330px"}}>
                         <table className="table table-striped">
                             <thead>
                                 <tr className="text-center">
@@ -168,6 +169,7 @@ export class UserFoodComponent extends React.Component {
                                 {this.renderRows()}
                             </tbody>
                         </table>
+                        </div>
 
                         {this.state.error === "" ? <form><label>Quantity</label>
                             <input type="number" className="form-control" name="quantity" onChange={this.handleQuantity} /></form> : null}

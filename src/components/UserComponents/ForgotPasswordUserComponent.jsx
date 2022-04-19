@@ -1,4 +1,6 @@
 import React from "react";
+import "../../css/Login.css";
+import "../../css/Header.css";
 import UserService from "../../services/UserService";
 import { FooterComponent } from "../FooterComponent";
 export class ForgotPasswordUserComponent extends React.Component {
@@ -90,7 +92,9 @@ export class ForgotPasswordUserComponent extends React.Component {
                         </div>
                     </div>
                 </div>
+                <div style={{marginTop: "298px"}}>
                 <FooterComponent />
+                </div>
             </div>
         )
     }

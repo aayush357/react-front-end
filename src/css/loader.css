@@ -1,0 +1,14 @@
+.loader {
+    display: flex;
+    justify-content: center;
+    height: 47vh;
+    align-items: flex-end;
+}
+
+#msg{
+    text-align: center;
+    font-size: x-large;
+    font-weight: 700;
+    color: black;
+    /* padding-right: 75px; */
+}

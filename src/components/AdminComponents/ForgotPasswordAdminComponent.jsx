@@ -91,7 +91,9 @@ export class ForgotPasswordAdminComponent extends React.Component {
                         </div>
                     </div>
                 </div>
-                <FooterComponent />
+                <div style={{ marginTop: "298px" }}>
+                    <FooterComponent />
+                </div>
             </div>
         )
     }

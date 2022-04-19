@@ -2,7 +2,7 @@ import React from "react";
 import UserService from "../../services/UserService";
 import { FooterComponent } from "../FooterComponent";
 import { AsideComponent } from "./AsideComponent";
-
+import "../../css/table.css"
 export class UserRoomComponent extends React.Component {
     constructor(props) {
         super();
@@ -129,7 +129,7 @@ export class UserRoomComponent extends React.Component {
                 <section className="section">
                     <div className="sectiondev">
                         <h3>Book Room</h3>
-
+                        <div style={{overflow:"hidden", overflowY:"scroll", height:"330px"}}>
                         <table className="table table-striped">
                             <thead>
                                 <tr className="text-center">
@@ -144,6 +144,8 @@ export class UserRoomComponent extends React.Component {
                                 {this.renderRows()}
                             </tbody>
                         </table>
+
+                        </div>
                         <div id="validation" style={{ color: "red", fontWeight: "700", textAlign: "center" }}>{this.state.error === "" ? (this.state.valErrors === null ? null : this.state.valErrors.map((value, index) => {
                             return <div>{value}</div>
                         })) : this.state.error}</div>

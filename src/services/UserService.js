@@ -1,7 +1,8 @@
 import axios from "axios";
 import authHeader from "./AuthHeader";
 
-const RESOURCE_API_BASE_URL = "http://localhost:8080/user";
+// const RESOURCE_API_BASE_URL = "http://localhost:8080/user";
+const RESOURCE_API_BASE_URL = "https://cdac-project-backend.herokuapp.com/user";
 class UserService {
     login(loginDetails) {
         const header = {
